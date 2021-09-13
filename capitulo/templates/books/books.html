@@ -1,0 +1,36 @@
+{% extends 'layout.html' %} {% block content %}
+
+<main id="main">
+	<div class="search-header">
+		<h1>Books in {{ search_title }}</h1>
+	</div>
+	<div class="books">
+		<ul>
+			{% for book in books %}
+			<li>
+				<div class="book-obj">
+					<img src="{{ book.image_hyperlink }}" width="200" height="300" />
+					<div class="sub-flex">
+						<h2>{{ book.title }}</h2>
+						<p>{{ book.description }}</p>
+					</div>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div class="pages-container">
+		<div class="pages">
+			<ul>
+				{% for page_link in page_list %}
+				<li>
+					<a href="{{ page_link }}">{{loop.index}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</main>
+
+{% endblock %}

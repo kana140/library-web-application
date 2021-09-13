@@ -1,7 +1,7 @@
 import json
 from typing import List
 
-from library.domain.model import Publisher, Author, Book
+from capitulo.domain.model import Publisher, Author, Book
 
 
 class BooksJSONReader:
@@ -46,7 +46,9 @@ class BooksJSONReader:
             else:
                 if book_json['is_ebook'].lower() == 'true':
                     book_instance.ebook = True
+            book_instance.language = book_json['language_code']
             book_instance.description = book_json['description']
+            book_instance.image_hyperlink = book_json['image_url']
             if book_json['num_pages'] != "":
                 book_instance.num_pages = int(book_json['num_pages'])
 

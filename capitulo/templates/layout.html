@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Capitulo</title>
+
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/main.css') }}"
+		/>
+
+		<link rel="bookmark" type="image/x-icon" href="favicon.ico" />
+
+		<link rel="icon" href="favicon.ico" />
+	</head>
+
+	<body>
+		<header>
+			<div id="header-container">
+				<img id="logo" src="{{ url_for('static', filename='capitulo.png') }}" />
+				<h1 id="header_title">Capitulo</h1>
+				{% include 'navbar.html' %}
+			</div>
+		</header>
+		<div id="body">
+			<div id="main-content">
+				<!-- Main content block for the page. -->
+				{% block content %}{% endblock %}
+			</div>
+		</div>
+		<div class="footer-container">
+			<div id="footer">
+				<!-- Include the footer -->
+				{% include 'footer.html' %}
+			</div>
+		</div>
+	</body>
+</html>

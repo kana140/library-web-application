@@ -1,0 +1,52 @@
+<nav id="nav">
+	<ul class="nav-links">
+		<li class="non-dropdown">
+			<a href="{{ url_for('home_bp.home') }}">Home</a>
+		</li>
+		<li id="dropdown1">
+			<a class="outer" href="">Browse by language</a>
+			<ul class="dropdown-content1">
+				{% for language in language_urls %}
+				<li>
+					<div class="sizing1">
+						<a class="btn-nav" href="{{ language_urls[language] }}"
+							>{{ language }}</a
+						>
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li class="non-dropdown">
+			<a href="{{ url_for('about_us_bp.about_us') }}">About Us</a>
+		</li>
+		<li id="dropdown2">
+			<a href="#">Profile</a>
+			<ul class="dropdown-content2">
+				<li>
+					<div class="sizing2">
+						<a
+							class="btn-nav"
+							href="{{ url_for('authentication_bp.register') }}"
+							>Register</a
+						>
+					</div>
+				</li>
+				<li>
+					<div class="sizing2">
+						<a class="btn-nav" href="{{ url_for('authentication_bp.login') }}"
+							>Login</a
+						>
+					</div>
+				</li>
+				<li>
+					<div class="sizing2">
+						<a class="btn-nav" href="{{ url_for('authentication_bp.logout') }}"
+							>Logout</a
+						>
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</nav>
