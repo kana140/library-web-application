@@ -3,32 +3,66 @@ from typing import List, Iterable
 from capitulo.adapters.repository import AbstractRepository
 from capitulo.domain.model import make_review, Book, Review, Author, Publisher
 
+
 class NonExistentBookException(Exception):
     pass
 
+
 class UnknownUserException(Exception):
     pass
+
 
 def add_review(book_id: int, review_text: str, user_name: str, rating: int, repo: AbstractRepository):
     # Check that the book exists
     book = repo.get_book(book_id)
     if book is None:
         raise NonExistentBookException
-    
+
     # Check if the user exists
     user = repo.get_user(user_name)
     if user is None:
         raise UnknownUserException
-    
+
     # Create the review
     review = make_review(book, review_text, rating, user)
 
     # Update the repo
     repo.add_review(review)
 
+
+def get_book(book_id: int, repo: AbstractRepository):
+    book = repo.get_book(book_id)
+
+    if book is None:
+        raise NonExistentBookException
+
+    return book_to_dict(book)
+
+
 def get_book_ids_for_language(language, repo: AbstractRepository):
     book_ids = repo.get_book_ids_for_language(language)
     return book_ids
+
+
+def get_books_by_author(author, repo: AbstractRepository):
+    books = books_to_dict(repo.get_books_by_author(author))
+    return books
+
+
+def get_books_by_publisher(publisher, repo: AbstractRepository):
+    books = books_to_dict(repo.get_books_by_publisher(publisher))
+    return books
+
+
+def get_books_by_release_year(release_year, repo: AbstractRepository):
+    books = books_to_dict(repo.get_books_by_release_year(release_year))
+    return books
+
+
+def get_book_ids_for_author(author_name, repo: AbstractRepository):
+    book_ids = repo.get_book_ids_for_author(author_name)
+    return book_ids
+
 
 def get_books_by_id(id_list, repo: AbstractRepository):
     books = repo.get_books_by_id(id_list)
@@ -38,7 +72,8 @@ def get_books_by_id(id_list, repo: AbstractRepository):
 
     return books_as_dict
 
-def book_to_dict(book:Book):
+
+def book_to_dict(book: Book):
     book_dict = {
         'id': book.book_id,
         'title': book.title,
@@ -53,8 +88,10 @@ def book_to_dict(book:Book):
     }
     return book_dict
 
+
 def books_to_dict(books: Iterable[Book]):
     return [book_to_dict(book) for book in books]
+
 
 def review_to_dict(review: Review):
     review_dict = {
@@ -66,8 +103,10 @@ def review_to_dict(review: Review):
     }
     return review_dict
 
+
 def reviews_to_dict(reviews: Iterable[Review]):
     return [review_to_dict(review) for review in reviews]
+
 
 def author_to_dict(author: Author):
     author_dict = {
@@ -76,8 +115,10 @@ def author_to_dict(author: Author):
     }
     return author_dict
 
+
 def authors_to_dict(authors: Iterable[Author]):
     return [author_to_dict(author) for author in authors]
+
 
 def dict_to_book(dict):
     book = Book(dict.id, dict.title)
@@ -91,5 +132,3 @@ def dict_to_book(dict):
 
     # There are no authors or reviews
     return book
-    
-

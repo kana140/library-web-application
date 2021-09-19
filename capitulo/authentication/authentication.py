@@ -79,7 +79,7 @@ def login():
         user_name_error_message=user_name_not_recognised,
         password_error_message=password_does_not_match_user_name,
         form=form,
-        language_urls = utilities.get_languages_and_urls()
+        language_urls=utilities.get_languages_and_urls()
     )
 
 
@@ -95,6 +95,7 @@ def login_required(view):
         if 'user_name' not in session:
             return redirect(url_for('authentication_bp.login'))
         return view(**kwargs)
+
     return wrapped_view
 
 

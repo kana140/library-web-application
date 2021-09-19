@@ -94,6 +94,21 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_reading_list(self) -> List[Book]:
+        """ Returns the reading list from the repository """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_book_to_reading_list(self, book: Book):
+        """ Adds a book to the repository """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def remove_book_from_reading_list(self, book: Book):
+        """ Removes book from the repository """
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def add_review(self, review: Review):
         """ Adds a review to the repository 
             If the review doesn't have bidirectional links with a Book and a User, this method raises a RepositoryException and doesn't update the repository """
@@ -112,6 +127,6 @@ class AbstractRepository(abc.ABC):
     def get_number_of_reviews(self):
         """ Returns the number of reviews stored in the repository """
         raise NotImplementedError
-    
+
 
 

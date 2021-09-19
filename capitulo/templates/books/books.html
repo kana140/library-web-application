@@ -2,18 +2,29 @@
 
 <main id="main">
 	<div class="search-header">
-		<h1>Books in {{ search_title }}</h1>
+		<h1>Books {{word}} {{ search_title }}</h1>
 	</div>
 	<div class="books">
 		<ul>
 			{% for book in books %}
 			<li>
 				<div class="book-obj">
+					<div>
+					<a href="{{ url_for('books_bp.individual_book', book_id=book['id']) }}">
 					<img src="{{ book.image_hyperlink }}" width="200" height="300" />
-					<div class="sub-flex">
-						<h2>{{ book.title }}</h2>
-						<p>{{ book.description }}</p>
+					</a>
 					</div>
+						<div class="sub-flex">
+						<h2>{{ book.title }} </h2>
+							<i> {{ book.reviews|length }} reviews </i>
+						<p>{{ book.description }} </p>
+					</div>
+					{% if 'user_name' in session %}
+					<div id="reading_list">
+						<a href="{{ url_for('reading_list_bp.add_book_to_reading_list', book_id=book['id']) }}">
+							<img id="bookmark" src="{{ url_for('static', filename='bookmark.png.png') }}" width="50" height="50" title="Add to Reading List"/>
+					</div>
+					{% endif %}
 				</div>
 			</li>
 			{% endfor %}

@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block content %}
+<main id="main">
+	<div class="book">
+        <div class="book-obj">
+            <img src="{{ book.image_hyperlink }}" width="300" height="400" />
+            <div class="sub-flex">
+                <h2>{{ book.title }}</h2>
+                <h3> Release Year: {{ book.release_year }} </h3>
+                <h3> Publisher: {{ book.publisher }} </h3>
+                <h4> Author(s): {{ book.authors }} </h4>
+                <p>{{ book.description }}</p>
+            </div>
+        </div>
+
+	</div>
+    <div class="reviews">
+        <h1>{{ book.reviews|length }} Reviews</h1>
+        <div class = "review-obj">
+                {% if book.reviews|length == 0 %}
+            <i>Be the first to leave a review!</i>
+                {% endif %}
+            {% for review in book.reviews %}
+                <p> {{review.review_text}}, by {{review.user_name}}, {{review.timestamp}}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-wrapper">
+        <form action="{{handler_url}}" method="post">
+            {{form.book_id}} <!-- Need to include this hidden field as it tracks the book being reviewed. -->
+            {{form.csrf_token}} <!-- Need to include this token - Flask WTForms requires it. -->
+            <br>
+            <div class = "form-review-field"> <b>{{form.review.label}} </b>
+                <div>
+                    {{form.review(size = 100, placeholder="type your review", class="textarea", cols="50", rows="6", wrap="hard")}}
+                </div>
+                {% if form.review.errors %}
+                    <ul class="errors">
+                        {% for error in form.review.errors %}
+                            <li>{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class = "form-rating-field"><b>{{form.rating.label}} </b>
+                <div>
+                    {{form.rating(placeholder="Enter a rating from 1-5", class="textarea", cols="20", rows="1", wrap="hard")}}
+                    </div>
+                {% if form.review.errors %}
+                    <ul class="errors">
+                        {% for error in form.review.errors %}
+                            <li>{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {{ form.submit }}   <!-- may or may not need -->
+        </form>
+    </div>
+</main>
+{% endblock %}

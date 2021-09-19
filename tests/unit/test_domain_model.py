@@ -3,8 +3,9 @@ import pytest
 
 from utils import get_project_root
 
-from library.domain.model import Publisher, Author, Book, Review, User, BooksInventory
-from library.adapters.jsondatareader import BooksJSONReader
+from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory
+from capitulo.adapters.jsondatareader import BooksJSONReader
+
 
 class TestPublisher:
 
@@ -119,7 +120,8 @@ class TestAuthor:
         set_of_authors.add(author1)
         set_of_authors.add(author2)
         set_of_authors.add(author3)
-        assert str(sorted(set_of_authors)) == "[<Author Neil Gaiman, author id = 2>, <Author J.R.R. Tolkien, author id = 13>, <Author J.K. Rowling, author id = 98>]"
+        assert str(sorted(
+            set_of_authors)) == "[<Author Neil Gaiman, author id = 2>, <Author J.R.R. Tolkien, author id = 13>, <Author J.K. Rowling, author id = 98>]"
 
     def test_coauthors(self):
         author1 = Author(1, "Neil Gaiman")
@@ -248,7 +250,8 @@ class TestBook:
         set_of_books.add(book1)
         set_of_books.add(book2)
         set_of_books.add(book3)
-        assert str(sorted(set_of_books)) == "[<Book West Side Story, book id = 89576>, <Book Harry Potter, book id = 874658>, <Book Hitchhiker's Guide to the Galaxy, book id = 2675376>]"
+        assert str(sorted(
+            set_of_books)) == "[<Book West Side Story, book id = 89576>, <Book Harry Potter, book id = 874658>, <Book Hitchhiker's Guide to the Galaxy, book id = 2675376>]"
 
     def test_comparison(self):
         book1 = Book(874658, "Harry Potter")
@@ -271,15 +274,18 @@ class TestBook:
         for author in authors:
             book.add_author(author)
 
-        assert str(book.authors) == "[<Author J.R.R. Tolkien, author id = 1>, <Author Neil Gaiman, author id = 2>, <Author Ernest Hemingway, author id = 3>, <Author J.K. Rowling, author id = 4>]"
+        assert str(
+            book.authors) == "[<Author J.R.R. Tolkien, author id = 1>, <Author Neil Gaiman, author id = 2>, <Author Ernest Hemingway, author id = 3>, <Author J.K. Rowling, author id = 4>]"
 
         # remove an Author who is not in the list
         book.remove_author(Author(5, "George Orwell"))
-        assert str(book.authors) == "[<Author J.R.R. Tolkien, author id = 1>, <Author Neil Gaiman, author id = 2>, <Author Ernest Hemingway, author id = 3>, <Author J.K. Rowling, author id = 4>]"
+        assert str(
+            book.authors) == "[<Author J.R.R. Tolkien, author id = 1>, <Author Neil Gaiman, author id = 2>, <Author Ernest Hemingway, author id = 3>, <Author J.K. Rowling, author id = 4>]"
 
         # remove an Author who is in the list
         book.remove_author(author2)
-        assert str(book.authors) == "[<Author J.R.R. Tolkien, author id = 1>, <Author Ernest Hemingway, author id = 3>, <Author J.K. Rowling, author id = 4>]"
+        assert str(
+            book.authors) == "[<Author J.R.R. Tolkien, author id = 1>, <Author Ernest Hemingway, author id = 3>, <Author J.K. Rowling, author id = 4>]"
 
 
 class TestReview:
@@ -288,7 +294,9 @@ class TestReview:
         book = Book(2675376, "Harry Potter")
         review_text = "  This book was very enjoyable.   "
         rating = 4
-        review = Review(book, review_text, rating)
+        user = User('DogLover', 'ihatedogs44')
+
+        review = Review(book, review_text, rating, user)
 
         assert str(review.book) == "<Book Harry Potter, book id = 2675376>"
         assert str(review.review_text) == "This book was very enjoyable."
@@ -296,7 +304,8 @@ class TestReview:
 
     def test_attributes_access(self):
         book = Book(2675376, "Harry Potter")
-        review = Review(book, 42, 3)
+        user = User('catsrokay', 'ifkingluvcats55')
+        review = Review(book, 42, 3, user)
         assert str(review.book) == "<Book Harry Potter, book id = 2675376>"
         assert str(review.review_text) == "N/A"
         assert review.rating == 3
@@ -304,32 +313,35 @@ class TestReview:
     def test_invalid_parameters(self):
         book = Book(2675376, "Harry Potter")
         review_text = "This book was very enjoyable."
+        user = User('whenwill', 'thisend24')
 
         with pytest.raises(ValueError):
-            review = Review(book, review_text, -1)
+            review = Review(book, review_text, -1, user)
 
         with pytest.raises(ValueError):
-            review = Review(book, review_text, 6)
+            review = Review(book, review_text, 6, user)
 
     def test_set_of_reviews(self):
         book1 = Book(2675376, "Harry Potter")
         book2 = Book(874658, "Lord of the Rings")
-        review1 = Review(book1, "I liked this book", 4)
-        review2 = Review(book2, "This book was ok", 3)
-        review3 = Review(book1, "This book was exceptional", 5)
+        user = User('idkwhat', 'imdoing34')
+        review1 = Review(book1, "I liked this book", 4, user)
+        review2 = Review(book2, "This book was ok", 3, user)
+        review3 = Review(book1, "This book was exceptional", 5, user)
         assert review1 != review2
         assert review1 != review3
         assert review3 != review2
 
     def test_wrong_book_object(self):
         publisher = Publisher("DC Comics")
-        review = Review(publisher, "I liked this book", 4)
+        user = User('idkwhat', 'imdoing34')
+        review = Review(publisher, "I liked this book", 4, user)
         assert review.book is None
+
 
 class TestUser:
 
     def test_construction(self):
-
         user1 = User('Shyamli', 'pw12345')
         user2 = User('Martin', 'pw67890')
         user3 = User('Daniel', 'pw87465')
@@ -372,15 +384,16 @@ class TestUser:
         assert user.pages_read == 0
         for book in books:
             user.read_a_book(book)
-        assert str(user.read_books) == "[<Book Harry Potter, book id = 874658>, <Book Lord of the Rings, book id = 89576>]"
+        assert str(
+            user.read_books) == "[<Book Harry Potter, book id = 874658>, <Book Lord of the Rings, book id = 89576>]"
         assert user.pages_read == 228
 
     def test_user_reviews(self):
         books = [Book(874658, "Harry Potter"), Book(89576, "Lord of the Rings")]
         user = User("Martin", "pw12345")
         assert user.reviews == []
-        review1 = Review(books[0], "I liked this book", 4)
-        review2 = Review(books[1], "This book was ok", 2)
+        review1 = Review(books[0], "I liked this book", 4, user)
+        review2 = Review(books[1], "This book was ok", 2, user)
         user.add_review(review1)
         user.add_review(review2)
         assert str(user.reviews[0].review_text) == "I liked this book"
@@ -405,7 +418,7 @@ def read_books_and_authors():
     # we use a method from a utils file in the root folder to figure out the root
     # this way testing code is always finding the right path to the data files
     root_folder = get_project_root()
-    data_folder = Path("library/adapters/data")
+    data_folder = Path("capitulo/adapters/data")
     path_to_books_file = str(root_folder / data_folder / books_file_name)
     path_to_authors_file = str(root_folder / data_folder / authors_file_name)
     reader = BooksJSONReader(path_to_books_file, path_to_authors_file)
@@ -431,7 +444,8 @@ class TestBooksJSONReader:
     def test_read_books_from_file_and_check_other_attributes(self, read_books_and_authors):
         dataset_of_books = read_books_and_authors
         assert dataset_of_books[2].release_year == 2012
-        assert dataset_of_books[19].description == "Lenalee is determined to confront a Level 4 Akuma that's out to kill Komui, but her only chance is to reclaim her Innocence and synchronize with it. The Level 4 is not inclined to wait around and pursues its mission even against the best efforts of Lavi and Kanda. It's left to Allen to hold the line, but it soon becomes obvious he has no hope of doing it all by himself!"
+        assert dataset_of_books[
+                   19].description == "Lenalee is determined to confront a Level 4 Akuma that's out to kill Komui, but her only chance is to reclaim her Innocence and synchronize with it. The Level 4 is not inclined to wait around and pursues its mission even against the best efforts of Lavi and Kanda. It's left to Allen to hold the line, but it soon becomes obvious he has no hope of doing it all by himself!"
         assert str(dataset_of_books[4].publisher) == "<Publisher DC Comics>"
         assert isinstance(dataset_of_books[4].publisher, Publisher)
         assert isinstance(dataset_of_books[4].authors[0], Author)
@@ -444,6 +458,7 @@ class TestBooksJSONReader:
     def test_read_books_from_file_special_characters(self, read_books_and_authors):
         dataset_of_books = read_books_and_authors
         assert dataset_of_books[17].title == "續．星守犬"
+
 
 class TestBooksInventory:
 
