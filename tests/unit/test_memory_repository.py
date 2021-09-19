@@ -73,3 +73,15 @@ def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given
 def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given_release_year(in_memory_repo):
     books = in_memory_repo.get_books_by_release_year(3000)
     assert books is None
+
+def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given_publisher(in_memory_repo):
+    books = in_memory_repo.get_books_by_publisher("publisher")
+    assert books is None
+
+def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given_language(in_memory_repo):
+    books = in_memory_repo.get_books_by_language("piglatin")
+    assert books is None
+
+def test_repository_can_get_langauges(in_memory_repo):
+    languages = in_memory_repo.get_languages()
+    assert len(languages)
