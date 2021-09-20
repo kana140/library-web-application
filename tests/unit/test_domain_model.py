@@ -409,6 +409,14 @@ class TestUser:
         assert str(user2) == "<User martin>"
         assert user2.password is None
 
+    def test_reading_list(self):
+        user1 = User('  Shyamli   ', 'pw12345')
+        assert len(user1.reading_list) == 0
+        book1 = Book(874658, "Harry Potter")
+        user1.add_to_reading_list(book1)
+        assert len(user1.reading_list) == 1
+        assert user1.reading_list[0] == book1
+
 
 @pytest.fixture
 def read_books_and_authors():
