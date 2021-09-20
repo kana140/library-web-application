@@ -122,8 +122,8 @@ class MemoryRepository(AbstractRepository):
         if book in user.reading_list:
             user.remove_from_reading_list(book)
 
-    def add_review(self, review):
-        super().add_review
+    def add_review(self, review: Review):
+        super().add_review(review)
         self.__reviews.append(review)
     
     def get_reviews(self):

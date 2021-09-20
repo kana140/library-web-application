@@ -2,7 +2,7 @@ from datetime import date, datetime
 from typing import List
 
 import pytest
-from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory
+from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory, make_review
 from capitulo.adapters.repository import RepositoryException
 
 
@@ -37,10 +37,25 @@ def test_repository_can_add_book(in_memory_repo):
 
 
 def test_repository_can_retrieve_book(in_memory_repo):
-    book = in_memory_repo.get_book(834955)
+    review1 = None
+    review2 = None
+    in_memory_repo.add_book(Book(342414, "FSOG"))
+    book = in_memory_repo.get_book(342414)
+    assert book.title == "FSOG"
 
-    assert book.title == "War Stories, Volume 3"
-    # expand on this?
+    user = User('person', 'whatmakesusure2')
+    user2 = User('thorke', 'feoiajf23')
+    make_review(book, "it was okay", 4, user)
+    make_review(book, "this book saved me", 4, user2)
+    for item in book.reviews:
+        if item.review_text == "it was okay":
+            review1 = item
+    for item in book.reviews:
+        if item.review_text == "this book saved me":
+            review2 = item
+
+    assert review1.user.user_name == 'person'
+    assert review2.user.user_name == "thorke"
 
 
 def test_repository_does_not_retrieve_a_non_existent_book(in_memory_repo):
@@ -71,7 +86,6 @@ def test_repository_can_retrieve_books_by_publisher(in_memory_repo):
 def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given_author(in_memory_repo):
     books = in_memory_repo.get_books_by_author("ur mum")
     assert books is None
-    # actually need to change memory_repository function
 
 
 def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given_release_year(in_memory_repo):
@@ -89,9 +103,24 @@ def test_repository_does_not_retrieve_a_book_when_there_are_no_books_for_a_given
     assert books is None
 
 
-def test_repository_can_get_langauges(in_memory_repo):
+def test_repository_can_get_languages(in_memory_repo):
     languages = in_memory_repo.get_languages()
-    assert len(languages)
+    assert len(languages) == 6
+
+
+def test_repository_can_get_authors(in_memory_repo):
+    authors = in_memory_repo.get_authors()
+    assert len(authors) == 31
+
+
+def test_repository_can_get_publishers(in_memory_repo):
+    publishers = in_memory_repo.get_publishers()
+    assert len(publishers) == 12
+
+
+def test_repository_can_get_release_years(in_memory_repo):
+    release_years = in_memory_repo.get_release_years()
+    assert len(release_years) == 8
 
 
 def test_repository_can_retrieve_reading_list_for_user(in_memory_repo):
@@ -128,3 +157,41 @@ def test_repository_can_remove_book_from_reading_list_for_user(in_memory_repo):
     assert len(reading_list) == 1
     in_memory_repo.remove_book_from_reading_list(book, user)
     assert len(reading_list) == 0
+
+
+def test_repository_can_add_a_review(in_memory_repo):
+    user = User('thorke', 'feoiajf23')
+    book = Book(23553, "my life")
+    review = make_review(book, "this book saved me", 4, user)
+    in_memory_repo.add_review(review)
+    assert review in in_memory_repo.get_reviews()
+
+
+def test_repository_does_not_add_a_review_without_a_user(in_memory_repo):
+    book = in_memory_repo.get_book(834955)
+    review = Review(book, "i really loved this book like it's my own child", 1, None)
+
+    with pytest.raises(RepositoryException):
+        in_memory_repo.add_review(review)
+
+
+def test_repository_does_not_add_a_review_without_a_book_properly_attached(in_memory_repo):
+    user = User('thorke', 'feoiajf23')
+    review = Review(None, "it was okay", 4, user)
+
+    user.add_review(review)
+
+    with pytest.raises(RepositoryException):
+        # Exception expected because the Article doesn't refer to the Comment.
+        in_memory_repo.add_review(review)
+
+
+def test_repository_can_retrieve_reviews(in_memory_repo):
+    assert len(in_memory_repo.get_reviews()) == 0
+    review = make_review(Book(45242, 'bookbook'), 'not the best', 4, User('badat', 'Hello343'))
+    in_memory_repo.add_review(review)
+    assert len(in_memory_repo.get_reviews()) == 1
+    review2 = make_review(Book(23553, "my life"), 'cool', 4, User('thorke', 'feoiajf23'))
+    in_memory_repo.add_review(review2)
+    assert len(in_memory_repo.get_reviews()) == 2
+

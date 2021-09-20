@@ -14,16 +14,19 @@ class UnknownUserException(Exception):
 
 def get_reading_list(user_name, repo: AbstractRepository):
     user = repo.get_user(user_name)
+    if user is None:
+        raise UnknownUserException
     reading_list = repo.get_reading_list(user)
     return reading_list
 
 
 def add_book_to_reading_list(book_id: int, user_name, repo: AbstractRepository):
     user = repo.get_user(user_name)
+    if user is None:
+        raise UnknownUserException
     reading_list = repo.get_reading_list(user)
     # Check that the book exists
     book = repo.get_book(book_id)
-    user = repo.get_user(user_name)
     if book is None:
         raise NonExistentBookException
 
@@ -33,6 +36,8 @@ def add_book_to_reading_list(book_id: int, user_name, repo: AbstractRepository):
 
 def remove_book_from_reading_list(book_id: int, user_name, repo: AbstractRepository):
     user = repo.get_user(user_name)
+    if user is None:
+        raise UnknownUserException
     # Check that the book exists
     book = repo.get_book(book_id)
     if book is None:

@@ -73,6 +73,15 @@ def get_books_by_id(id_list, repo: AbstractRepository):
     return books_as_dict
 
 
+def get_reviews_for_book(book_id, repo: AbstractRepository):
+    book = repo.get_book(book_id)
+
+    if book is None:
+        raise NonExistentBookException
+
+    return reviews_to_dict(book.reviews)
+
+
 def book_to_dict(book: Book):
     book_dict = {
         'id': book.book_id,
