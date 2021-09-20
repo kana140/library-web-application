@@ -8,6 +8,49 @@
 		have it all. Take a look at one of our browsing options in the navigation
 		bar above and get browing!
 	</p>
+	<div class="s-o-b">
+		<h1 class="search-or-browse">Search Or Browse</h1>
+	</div>
+
+	<div class="books">
+		<ul>
+			{% for book in books %}
+			<li>
+				<div class="book-obj">
+					<div>
+					<a href="{{ url_for('books_bp.individual_book', book_id=book['id']) }}">
+					<img src="{{ book.image_hyperlink }}" width="200" height="300" />
+					</a>
+					</div>
+						<div class="sub-flex">
+						<h2>{{ book.title }} </h2>
+							<i> {{ book.reviews|length }} reviews </i>
+						<p>{{ book.description }} </p>
+					</div>
+					{% if 'user_name' in session %}
+					<div id="reading_list">
+						<a href="{{ url_for('reading_list_bp.add_book_to_reading_list', book_id=book['id']) }}">
+							<img class="bookmark" src="{{ url_for('static', filename='bookmark.png.png') }}" width="50" height="50" title="Add to Reading List"/>
+					</div>
+					{% endif %}
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div class="pages-container">
+		<div class="pages">
+			<ul>
+				{% for page_link in page_list %}
+				<li>
+					<a href="{{ page_link }}">{{loop.index}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
 </main>
 
 {% endblock %}

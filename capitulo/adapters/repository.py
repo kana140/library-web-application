@@ -128,5 +128,7 @@ class AbstractRepository(abc.ABC):
         """ Returns the number of reviews stored in the repository """
         raise NotImplementedError
 
-
-
+    @abc.abstractmethod
+    def get_all_books(self):
+        """ Returns all books in the repository """
+        raise NotImplementedError

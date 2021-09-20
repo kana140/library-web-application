@@ -42,3 +42,7 @@ def get_release_years_and_urls():
 def get_book(book_id):
     book = services.get_book(book_id, repo.repo_instance)
     return book
+
+def get_all_books():
+    books = services.get_all_books(repo.repo_instance)
+    return books

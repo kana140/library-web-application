@@ -25,4 +25,7 @@ def get_book(book_id: int, repo: AbstractRepository):
     book = repo.get_book(book_id)
     return book
 
+def get_all_books(repo: AbstractRepository):
+    books = repo.get_all_books()
+    return books
 

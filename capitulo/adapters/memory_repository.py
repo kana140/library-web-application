@@ -145,6 +145,9 @@ class MemoryRepository(AbstractRepository):
     def get_release_years(self):
         return sorted(self.__release_years)
 
+    def get_all_books(self):
+        return sorted(self.__books)
+
     def get_book_ids_for_language(self, language):
         # Needs to be an exact match for the language we're after.
         matching_book_ids = [ book.book_id for book in self.__books if book.language == language ]
@@ -157,6 +160,7 @@ class MemoryRepository(AbstractRepository):
         if len(matching_book_ids) == 0:
             return None
         return matching_book_ids
+    
     
     def get_books_by_id(self, id_list):
         # Strip out unrelated IDs
