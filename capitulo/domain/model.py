@@ -140,23 +140,23 @@ class Book:
                 raise ValueError
         else:
             raise ValueError
-    
+
     @property
     def image_hyperlink(self) -> str:
         return self.__image_hyperlink
-    
+
     @image_hyperlink.setter
     def image_hyperlink(self, image_hyperlink: str):
         self.__image_hyperlink = image_hyperlink
-    
+
     @property
     def reviews(self):
         return self.__reviews
-    
+
     @property
     def language(self) -> str:
         return self.__language
-    
+
     @language.setter
     def language(self, book_language: str):
         if isinstance(book_language, str):
@@ -234,7 +234,7 @@ class Book:
     def num_pages(self, num_pages: int):
         if isinstance(num_pages, int) and num_pages >= 0:
             self.__num_pages = num_pages
-    
+
     def add_review(self, review):
         self.__reviews.append(review)
 
@@ -260,7 +260,7 @@ class Review:
             self.__book = book
         else:
             self.__book = None
-        
+
         if isinstance(user, User):
             self.__user = user
         else:
@@ -281,7 +281,7 @@ class Review:
     @property
     def user(self):
         return self.__user
-    
+
     @property
     def book(self) -> Book:
         return self.__book
@@ -325,6 +325,7 @@ class User:
         self.__read_books = []
         self.__reviews = []
         self.__pages_read = 0
+        self.__reading_list = []
 
     @property
     def user_name(self) -> str:
@@ -341,6 +342,18 @@ class User:
     @property
     def reviews(self) -> List[Review]:
         return self.__reviews
+
+    @property
+    def reading_list(self) -> List[Book]:
+        return self.__reading_list
+
+    def add_to_reading_list(self, book: Book):
+        if isinstance(book, Book):
+            self.__reading_list.append(book)
+
+    def remove_from_reading_list(self, book: Book):
+        if isinstance(book, Book):
+            self.__reading_list.remove(book)
 
     @property
     def pages_read(self) -> int:
@@ -370,7 +383,6 @@ class User:
 
     def __hash__(self):
         return hash(self.user_name)
-
 
 class BooksInventory:
 

@@ -94,17 +94,17 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_reading_list(self) -> List[Book]:
+    def get_reading_list(self, user) -> List[Book]:
         """ Returns the reading list from the repository """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_book_to_reading_list(self, book: Book):
+    def add_book_to_reading_list(self, book: Book, user):
         """ Adds a book to the repository """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def remove_book_from_reading_list(self, book: Book):
+    def remove_book_from_reading_list(self, book: Book, user):
         """ Removes book from the repository """
         raise NotImplementedError
 
