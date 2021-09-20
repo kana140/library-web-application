@@ -9,9 +9,7 @@
 				{% for author in author_urls %}
 				<li>
 					<div class="sizing1">
-						<a class="btn-nav" href="{{ author_urls[author] }}"
-							>{{ author }}</a
-						>
+						<a class="btn-nav" href="{{ author_urls[author] }}">{{ author }}</a>
 					</div>
 				</li>
 				{% endfor %}
@@ -23,7 +21,7 @@
 			<ul class="dropdown-content1">
 				{% for language in language_urls %}
 				<li>
-					<div class="sizing1">
+					<div class="sizing4">
 						<a class="btn-nav" href="{{ language_urls[language] }}"
 							>{{ language }}</a
 						>
@@ -33,13 +31,12 @@
 			</ul>
 		</li>
 
-
 		<li id="dropdown1">
 			<a class="outer" href="">Publisher</a>
 			<ul class="dropdown-content1">
 				{% for publisher in publisher_urls %}
 				<li>
-					<div class="sizing1">
+					<div class="sizing5">
 						<a class="btn-nav" href="{{ publisher_urls[publisher] }}"
 							>{{ publisher }}</a
 						>
@@ -54,7 +51,7 @@
 			<ul class="dropdown-content1">
 				{% for year in release_year_urls %}
 				<li>
-					<div class="sizing1">
+					<div class="sizing3">
 						<a class="btn-nav" href="{{ release_year_urls[year] }}"
 							>{{ year }}</a
 						>
@@ -71,9 +68,9 @@
 		<li id="dropdown2">
 			<!-- if user is logged in then this is displayed, else name profile is displayed instead -->
 			{% if 'user_name' in session %}
-				<a href="#"> {{ session['user_name']}}! </a>
+			<a href="#"> {{ session['user_name']}}! </a>
 			{% else %}
-				<a href="#">Profile</a>
+			<a href="#">Profile</a>
 			{% endif %}
 			<ul class="dropdown-content2">
 				{% if 'user_name' not in session %}
@@ -97,7 +94,8 @@
 				<li>
 					<div class="sizing2">
 						<a
-							class="btn-nav" href="{{ url_for('reading_list_bp.reading_list') }}"
+							class="btn-nav"
+							href="{{ url_for('reading_list_bp.reading_list') }}"
 							>Bookmarks</a
 						>
 					</div>
@@ -117,7 +115,7 @@
 			{% if 'user_name' in session %} Hello, {{ session['user_name']}}! {%
 			endif %}
 		</li>
-		--> <!-- option #2 to display user_name -->
+		-->
+		<!-- option #2 to display user_name -->
 	</ul>
-
 </nav>

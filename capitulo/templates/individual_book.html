@@ -1,30 +1,39 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'layout.html' %} {% block content %}
 <main id="main">
 	<div class="book">
-        <h1 id="book-header">{{ book.title }}</h1>
-        <div class="book-obj">
-            <img src="{{ book.image_hyperlink }}" width="300" height="400" />
-            <div class="sub-flex">
-                <h3> Release Year: {{ book.release_year }} </h3>
-                <h3> Publisher: {{ book.publisher }} </h3>
-                <h4> Author(s): {{ book.authors }} </h4>
-                <p>{{ book.description }}</p>
-            </div>
-        </div>
-
+		<h1 id="book-header">{{ book.title }}</h1>
+		<div class="book-obj">
+			<img src="{{ book.image_hyperlink }}" width="300" height="400" />
+			<div class="sub-flex">
+				<h3>Release Year: {{ book.release_year }}</h3>
+				<h3>Publisher: {{ book.publisher }}</h3>
+				<h4>
+					Author(s): {% for author in book.authors %}{{ author.full_name }} {%
+					if not loop.last %}, {% endif %}{% endfor %}
+				</h4>
+				<p>{{ book.description }}</p>
+			</div>
+		</div>
 	</div>
-    <div class="reviews">
-        <h1>{{ book.reviews|length }} Reviews</h1>
-        <div class = "review-obj">
-                {% if book.reviews|length == 0 %}
-                    Be the first to leave a review!
-                {% endif %}
-                <button class = "btn-general" onclick="location.href='{{ book.add_review_url }}'"> Add Review</button>
-                {% for review in book.reviews %}
-                    <p>{{review.review_text}}, by {{review.user_name}}, {{review.timestamp}}</p>
-                {% endfor %}
-        </div>
-    </div>
+	<div class="reviews">
+		<h1>{{ book.reviews|length }} Reviews</h1>
+		<div class="review-obj">
+			<p>
+				{% if book.reviews|length == 0 %} Be the first to leave a review! {%
+				endif %}
+			</p>
+			<button
+				class="btn-general"
+				onclick="location.href='{{ book.add_review_url }}'"
+			>
+				Add Review
+			</button>
+			{% for review in book.reviews %}
+			<p>
+				{{review.review_text}}, by {{review.user_name}}, {{review.timestamp}}
+			</p>
+			{% endfor %}
+		</div>
+	</div>
 </main>
 {% endblock %}

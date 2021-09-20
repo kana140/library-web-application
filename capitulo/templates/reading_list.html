@@ -1,25 +1,39 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-{% extends 'layout.html' %}
-{% block content %}
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
+{% extends 'layout.html' %} {% block content %}
 
 <main id="main">
 	<div class="reading_list">
-      <h1> Reading List</h1>
-        {% for book in read_list %}
-        <ul class="item-row">
-            <li>
-                <div>
-                    <a href="{{ url_for('books_bp.individual_book', book_id=book.book_id) }}">
-                    <img src="{{ book.image_hyperlink }}" width="150" height="200" title="{{book.title}}"/>
-                    </a>
-                </div>
-                <div>
-                <button class = "remove-btn" onclick="location.href='{{ url_for('reading_list_bp.remove_book_from_reading_list', book_id=book.book_id) }}'"> <i class="fa fa-trash"></i> </button>
-                </div>
-            </li>
-        </ul>
-        {% endfor %}
-        </div>
+		<h1>Reading List</h1>
+		{% for book in read_list %}
+		<ul class="item-row">
+			<li>
+				<div>
+					<a
+						href="{{ url_for('books_bp.individual_book', book_id=book.book_id) }}"
+					>
+						<img
+							src="{{ book.image_hyperlink }}"
+							width="150"
+							height="200"
+							title="{{book.title}}"
+						/>
+					</a>
+				</div>
+				<div>
+					<button
+						class="remove-btn"
+						onclick="location.href='{{ url_for('reading_list_bp.remove_book_from_reading_list', book_id=book.book_id) }}'"
+					>
+						<i class="fa fa-trash"></i>
+					</button>
+				</div>
+			</li>
+		</ul>
+		{% endfor %}
+	</div>
 </main>
 
 {% endblock %}

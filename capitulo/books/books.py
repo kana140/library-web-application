@@ -24,7 +24,12 @@ def individual_book(book_id):
     show_reviews = request.args.get('view_reviews_for')
     book = services.get_book(book_id, repo.repo_instance)
     book['add_review_url'] = url_for('books_bp.review_book', book=book['id'])
-    return render_template('individual_book.html', book=book, show_reviews_for_book=show_reviews)
+    return render_template('individual_book.html', book=book, show_reviews_for_book=show_reviews,
+        author_urls=utilities.get_authors_and_urls(),
+        language_urls=utilities.get_languages_and_urls(),
+        publisher_urls=utilities.get_publishers_and_urls(),
+        release_year_urls=utilities.get_release_years_and_urls()
+    )
 
 
 @books_blueprint.route('/books_by_language', methods=['GET'])
@@ -61,6 +66,9 @@ def books_by_language():
         books=books,
         language_urls=utilities.get_languages_and_urls(),
         word="in",
+        author_urls=utilities.get_authors_and_urls(),
+        publisher_urls=utilities.get_publishers_and_urls(),
+        release_year_urls=utilities.get_release_years_and_urls()
     )
 
 
@@ -96,7 +104,10 @@ def books_by_author():
         page_list=page_list,
         books=books,
         author_urls=utilities.get_authors_and_urls(),
-        word="by"
+        word="by",
+        language_urls=utilities.get_languages_and_urls(),
+        publisher_urls=utilities.get_publishers_and_urls(),
+        release_year_urls=utilities.get_release_years_and_urls()
     )
 
 
@@ -132,7 +143,10 @@ def books_by_publisher():
         page_list=page_list,
         books=books,
         publisher_urls=utilities.get_publishers_and_urls(),
-        word="from"
+        word="from",
+        language_urls=utilities.get_languages_and_urls(),
+        author_urls=utilities.get_authors_and_urls(),
+        release_year_urls=utilities.get_release_years_and_urls()
     )
 
 
@@ -168,7 +182,10 @@ def books_by_release_year():
         page_list=page_list,
         books=books,
         release_year_urls=utilities.get_release_years_and_urls(),
-        word="from"
+        word="from",
+        language_urls=utilities.get_languages_and_urls(),
+        author_urls=utilities.get_authors_and_urls(),
+        publisher_urls=utilities.get_publishers_and_urls()
     )
 
 
@@ -216,7 +233,11 @@ def review_book():
         title='Review Book',
         book=book,
         form=form,
-        handle_url=url_for('books_bp.review_book')
+        handle_url=url_for('books_bp.review_book'),
+        language_urls=utilities.get_languages_and_urls(),
+        author_urls=utilities.get_authors_and_urls(),
+        publisher_urls=utilities.get_publishers_and_urls(),
+        release_year_urls=utilities.get_release_years_and_urls()
     )
 
 

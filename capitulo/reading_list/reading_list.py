@@ -16,7 +16,11 @@ def reading_list():
     # for book in read_list:
     #     book['add_to_reading_list_url'] = url_for('reading_list_bp.add_book_to_reading_list()', book=book)
 
-    return render_template('/reading_list.html', read_list=read_list)  # Template for reading list
+    return render_template('/reading_list.html', read_list=read_list,
+        language_urls=utilities.get_languages_and_urls(),
+        author_urls=utilities.get_authors_and_urls(),
+        publisher_urls=utilities.get_publishers_and_urls(),
+        release_year_urls=utilities.get_release_years_and_urls())  # Template for reading list
 
 
 @reading_list_blueprint.route('/reading_list/book_added', methods=['GET', 'POST'])

@@ -22,7 +22,7 @@
 					{% if 'user_name' in session %}
 					<div id="reading_list">
 						<a href="{{ url_for('reading_list_bp.add_book_to_reading_list', book_id=book['id']) }}">
-							<img id="bookmark" src="{{ url_for('static', filename='bookmark.png.png') }}" width="50" height="50" title="Add to Reading List"/>
+							<img class="bookmark" src="{{ url_for('static', filename='bookmark.png.png') }}" width="50" height="50" title="Add to Reading List"/>
 					</div>
 					{% endif %}
 				</div>
