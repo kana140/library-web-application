@@ -10,6 +10,18 @@
 	</p>
 	<div class="s-o-b">
 		<h1 class="search-or-browse">Search Or Browse</h1>
+		{% from "_formhelpers.html" import render_field %}
+		<form method="post">
+			<dl>
+				{{ render_field(form.select) }}
+				<p>
+					{{ render_field(form.search) }}
+				</p>
+			</dl>
+			<p>
+				<input type="submit" value="Search">
+			</p>
+		</form>
 	</div>
 
 	<div class="books">

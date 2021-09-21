@@ -672,12 +672,14 @@ input[type="submit"]:hover {
 }
 
 .s-o-b {
-	display: flex;
+	display: block;
 	margin-top: 2em;
 	margin-bottom: 2em;
+	margin-right: 50em;
 }
 
 .search-or-browse {
 	font-size: 38px;
 	color: #468faf;
+	margin-bottom: 1em;
 }
