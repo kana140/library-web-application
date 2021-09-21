@@ -18,8 +18,8 @@ def get_languages_and_urls():
 def get_authors_and_urls():
     authors = services.get_authors(repo.repo_instance)
     author_urls = dict()
-    for author_name in authors:
-        author_urls[author_name] = url_for('books_bp.books_by_author', author_name=author_name)
+    for author in authors:
+        author_urls[author] = url_for('books_bp.books_by_author', author_name=author.full_name, author_id=author.unique_id)
     return author_urls
 
 

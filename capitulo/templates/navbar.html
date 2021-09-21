@@ -9,7 +9,9 @@
 				{% for author in author_urls %}
 				<li>
 					<div class="sizing1">
-						<a class="btn-nav" href="{{ author_urls[author] }}">{{ author }}</a>
+						<a class="btn-nav" href="{{ author_urls[author] }}"
+							>{{ author.full_name }}</a
+						>
 					</div>
 				</li>
 				{% endfor %}

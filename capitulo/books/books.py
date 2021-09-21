@@ -12,6 +12,8 @@ import capitulo.adapters.repository as repo
 import capitulo.utilities.utilities as utilities
 import capitulo.books.services as services
 
+import sys
+
 from capitulo.authentication.authentication import login_required
 
 # Configure the Blueprint
@@ -78,6 +80,7 @@ def books_by_author():
 
     # Read in the query parameters
     author_name = request.args.get('author_name')
+    author_id = request.args.get('author_id')
     page = request.args.get('page')
 
     if page is None:
@@ -85,17 +88,17 @@ def books_by_author():
     else:
         page = int(page)
 
-    books = services.get_books_by_author(author_name, repo.repo_instance)
+    book_ids = services.get_book_ids_for_author(author_id, repo.repo_instance)
 
     # Retrieve the set books we want to display based on the page
-    # books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
+    books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
 
-    number_of_pages = math.ceil(len(books) / books_per_page)
+    number_of_pages = math.ceil(len(book_ids) / books_per_page)
 
     # Note that we will display the number of pages, and we need to remember to inform the request.args of our page number.
     page_list = []
     for i in range(1, number_of_pages + 1):
-        page_list.append(url_for('books_bp.books_by_author', page=i, author_name=author_name))
+        page_list.append(url_for('books_bp.books_by_author', page=i, author_id=author_id, author_name=author_name))
 
     # Generate the template
     return render_template(
@@ -124,12 +127,12 @@ def books_by_publisher():
     else:
         page = int(page)
 
-    books = services.get_books_by_publisher(publisher_name.strip(), repo.repo_instance)
+    book_ids = services.get_book_ids_for_publisher(publisher_name.strip(), repo.repo_instance)
 
     # Retrieve the set books we want to display based on the page
-    # books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
+    books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
 
-    number_of_pages = math.ceil(len(books) / books_per_page)
+    number_of_pages = math.ceil(len(book_ids) / books_per_page)
 
     # Note that we will display the number of pages, and we need to remember to inform the request.args of our page number.
     page_list = []
@@ -162,13 +165,13 @@ def books_by_release_year():
         page = 1
     else:
         page = int(page)
-
-    books = services.get_books_by_release_year(int(release_year), repo.repo_instance)
+    
+    book_ids = services.get_book_ids_for_year(int(release_year), repo.repo_instance)
 
     # Retrieve the set books we want to display based on the page
-    # books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
+    books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
 
-    number_of_pages = math.ceil(len(books) / books_per_page)
+    number_of_pages = math.ceil(len(book_ids) / books_per_page)
 
     # Note that we will display the number of pages, and we need to remember to inform the request.args of our page number.
     page_list = []

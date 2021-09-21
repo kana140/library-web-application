@@ -2,6 +2,7 @@ from capitulo.adapters.jsondatareader import BooksJSONReader as reader
 from pathlib import Path
 from datetime import date, datetime
 from typing import List
+import sys
 
 from bisect import bisect, bisect_left, insort_left
 
@@ -40,8 +41,8 @@ class MemoryRepository(AbstractRepository):
                 self.__languages.append(book.language)
         if book.authors is not None:
             for author in book.authors:
-                if author.full_name not in self.__authors:
-                    self.__authors.append(author.full_name)
+                if author not in self.__authors:
+                    self.__authors.append(author)
         if book.publisher is not None:
             if book.publisher.name not in self.__publishers:
                 self.__publishers.append(book.publisher.name)
@@ -154,8 +155,23 @@ class MemoryRepository(AbstractRepository):
             return None
         return matching_book_ids
 
-    def get_book_ids_for_author(self, author):
-        matching_book_ids = [ book.book_id for book in self.__authors if book.author == author]
+    def get_book_ids_for_author(self, author_id):
+        matching_book_ids = []
+        for book in self.__books:
+            for author in book.authors:
+                if int(author_id) == int(author.unique_id):
+                    matching_book_ids.append(book.book_id)
+        return matching_book_ids
+    
+    def get_book_ids_for_publisher(self, publisher_name: str):
+        matching_book_ids = [ book.book_id for book in self.__books if publisher_name == book.publisher.name ]
+        if len(matching_book_ids) == 0:
+            return None
+        return matching_book_ids
+    
+    def get_book_ids_for_year(self, year: int):
+
+        matching_book_ids = [ book.book_id for book in self.__books if int(year) == book.release_year ]
         if len(matching_book_ids) == 0:
             return None
         return matching_book_ids
