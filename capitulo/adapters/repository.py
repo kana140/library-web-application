@@ -128,5 +128,32 @@ class AbstractRepository(abc.ABC):
         """ Returns the number of reviews stored in the repository """
         raise NotImplementedError
 
-
-
+    @abc.abstractmethod
+    def get_all_books(self):
+        """ Returns all books in the repository """
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_book_ids_for_language(self, language: str):
+        """ Returns all the book ids for a given language """
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_book_ids_for_author(self, author: Author):
+        """ Returns all the book ids for a given author """
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_book_ids_for_publisher(self, publisher: Publisher):
+        """ Returns all the book ids for a given publisher """
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_book_ids_for_year(self, year: int):
+        """ Returns all the book ids for a given year """
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_book_ids_all(self):
+        """ Returns all book ids """
+        raise NotImplementedError

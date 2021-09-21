@@ -43,11 +43,21 @@ def get_book_ids_for_language(language, repo: AbstractRepository):
     book_ids = repo.get_book_ids_for_language(language)
     return book_ids
 
+def get_book_ids_for_author(author_id, repo: AbstractRepository):
+    book_ids = repo.get_book_ids_for_author(int(author_id))
+    return book_ids
+
+def get_book_ids_for_publisher(publisher_name, repo: AbstractRepository):
+    book_ids = repo.get_book_ids_for_publisher(publisher_name)
+    return book_ids
+
+def get_book_ids_for_year(year, repo: AbstractRepository):
+    book_ids = repo.get_book_ids_for_year(year)
+    return book_ids
 
 def get_books_by_author(author, repo: AbstractRepository):
     books = books_to_dict(repo.get_books_by_author(author))
     return books
-
 
 def get_books_by_publisher(publisher, repo: AbstractRepository):
     books = books_to_dict(repo.get_books_by_publisher(publisher))
@@ -57,12 +67,6 @@ def get_books_by_publisher(publisher, repo: AbstractRepository):
 def get_books_by_release_year(release_year, repo: AbstractRepository):
     books = books_to_dict(repo.get_books_by_release_year(release_year))
     return books
-
-
-def get_book_ids_for_author(author_name, repo: AbstractRepository):
-    book_ids = repo.get_book_ids_for_author(author_name)
-    return book_ids
-
 
 def get_books_by_id(id_list, repo: AbstractRepository):
     books = repo.get_books_by_id(id_list)

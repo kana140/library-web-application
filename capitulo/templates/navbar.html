@@ -9,7 +9,9 @@
 				{% for author in author_urls %}
 				<li>
 					<div class="sizing1">
-						<a class="btn-nav" href="{{ author_urls[author] }}">{{ author }}</a>
+						<a class="btn-nav" href="{{ author_urls[author] }}"
+							>{{ author.full_name }}</a
+						>
 					</div>
 				</li>
 				{% endfor %}
@@ -32,7 +34,7 @@
 		</li>
 
 		<li id="dropdown1">
-			<a class="outer" href="">Publisher</a>
+			<a class="outer" href="">Publishers</a>
 			<ul class="dropdown-content1">
 				{% for publisher in publisher_urls %}
 				<li>
@@ -47,7 +49,7 @@
 		</li>
 
 		<li id="dropdown1">
-			<a class="outer" href="">Year</a>
+			<a class="outer" href="">Years</a>
 			<ul class="dropdown-content1">
 				{% for year in release_year_urls %}
 				<li>

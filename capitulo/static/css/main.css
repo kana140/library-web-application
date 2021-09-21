@@ -26,6 +26,21 @@ header {
 	padding-bottom: 0.1em;
 }
 
+#logo {
+	cursor: pointer;
+	width: 6em;
+}
+
+@media (max-width: 890px) {
+	#logo {
+		display: none;
+	}
+	header {
+		padding-bottom: 0.5em;
+		padding-top: 0.5em;
+	}
+}
+
 @media (max-width: 1165px) {
 	#header_title {
 		display: none;
@@ -137,11 +152,6 @@ header {
 
 nav {
 	background-color: #468faf;
-}
-
-#logo {
-	cursor: pointer;
-	width: 6em;
 }
 
 .nav-links {
@@ -659,4 +669,17 @@ input[type="submit"]:hover {
 
 .about-us p {
 	margin-bottom: 0.8em;
+}
+
+.s-o-b {
+	display: block;
+	margin-top: 2em;
+	margin-bottom: 2em;
+	margin-right: 50em;
+}
+
+.search-or-browse {
+	font-size: 38px;
+	color: #468faf;
+	margin-bottom: 1em;
 }

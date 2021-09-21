@@ -4,6 +4,7 @@ from capitulo.adapters.jsondatareader import BooksJSONReader as reader
 from pathlib import Path
 from datetime import date, datetime
 from typing import List
+import sys
 
 from bisect import bisect, bisect_left, insort_left
 
@@ -31,7 +32,7 @@ class MemoryRepository(AbstractRepository):
 
     def get_user(self, user_name) -> User:
         return next((user for user in self.__users if user.user_name == user_name), None)
-    
+
     def get_number_of_users(self) -> int:
         return len(self.__users)
 
@@ -43,8 +44,8 @@ class MemoryRepository(AbstractRepository):
                 self.__languages.append(book.language)
         if book.authors is not None:
             for author in book.authors:
-                if author.full_name not in self.__authors:
-                    self.__authors.append(author.full_name)
+                if author not in self.__authors:
+                    self.__authors.append(author)
         if book.publisher is not None:
             if book.publisher.name not in self.__publishers:
                 self.__publishers.append(book.publisher.name)
@@ -52,7 +53,7 @@ class MemoryRepository(AbstractRepository):
             if book.release_year not in self.__release_years:
                 if book.release_year is not None:
                     self.__release_years.append(book.release_year)
-    
+
     def get_book(self, id: int) -> Book:
         book = None
         try:
@@ -60,7 +61,7 @@ class MemoryRepository(AbstractRepository):
         except KeyError:
             pass
         return book
-    
+
     def get_books_by_author(self, author: str) -> List[Book]:
         # Searching for one author will return all books done by that author.
         matching_books = []
@@ -71,41 +72,41 @@ class MemoryRepository(AbstractRepository):
         if len(matching_books) == 0:
             return None
         return matching_books
-    
+
     def get_books_by_release_year(self, release_year: int) -> List[Book]:
-        matching_books = [ book for book in self.__books if book.release_year == release_year]
+        matching_books = [book for book in self.__books if book.release_year == release_year]
         if len(matching_books) == 0:
             return None
         return matching_books
 
     def get_books_by_publisher(self, publisher: str) -> List[Book]:
-        matching_books = [ book for book in self.__books if book.publisher.name == publisher]
+        matching_books = [book for book in self.__books if book.publisher.name == publisher]
         if len(matching_books) == 0:
             return None
         return matching_books
-    
+
     def get_books_by_language(self, language: str) -> List[Book]:
         # Needs to be an exact match for the language we're after.
-        matching_books = [ book for book in self.__books if book.language == language ]
+        matching_books = [book for book in self.__books if book.language == language]
         if len(matching_books) == 0:
             return None
         return matching_books
 
     def get_books_by_title(self, title: str) -> List[Book]:
         # Doesn't have to be an exact match, as long as the searched for string is a substring of the title.
-        matching_books = [ book for book in self.__books if title in book.title ]
+        matching_books = [book for book in self.__books if title in book.title]
         if len(matching_books) == 0:
             return None
         return matching_books
-    
+
     def get_number_of_books(self) -> int:
         return len(self.__books)
-    
+
     def get_first_book(self) -> Book:
         if len(self.__books) == 0:
             return None
         return self.__books[0]
-    
+
     def get_last_book(self) -> Book:
         if len(self.__books) == 0:
             return None
@@ -116,25 +117,25 @@ class MemoryRepository(AbstractRepository):
         return user.reading_list
 
     def add_book_to_reading_list(self, book, user):
-        #super().add_book_to_reading_list
+        # super().add_book_to_reading_list
         if book not in user.reading_list:
             user.add_to_reading_list(book)
 
     def remove_book_from_reading_list(self, book, user):
-        #super().remove_book_from_reading_list
+        # super().remove_book_from_reading_list
         if book in user.reading_list:
             user.remove_from_reading_list(book)
 
     def add_review(self, review: Review):
         super().add_review(review)
         self.__reviews.append(review)
-    
+
     def get_reviews(self):
         return self.__reviews
-    
+
     def get_number_of_reviews(self):
         return len(self.__reviews)
-    
+
     def get_languages(self):
         return self.__languages
 
@@ -147,19 +148,42 @@ class MemoryRepository(AbstractRepository):
     def get_release_years(self):
         return sorted(self.__release_years)
 
+    def get_all_books(self):
+        return sorted(self.__books)
+
     def get_book_ids_for_language(self, language):
         # Needs to be an exact match for the language we're after.
-        matching_book_ids = [ book.book_id for book in self.__books if book.language == language ]
+        matching_book_ids = [book.book_id for book in self.__books if book.language == language]
         if len(matching_book_ids) == 0:
             return None
         return matching_book_ids
 
-    def get_book_ids_for_author(self, author):
-        matching_book_ids = [ book.book_id for book in self.__authors if book.author == author]
+    def get_book_ids_for_author(self, author_id):
+        matching_book_ids = []
+        for book in self.__books:
+            for author in book.authors:
+                if int(author_id) == int(author.unique_id):
+                    matching_book_ids.append(book.book_id)
+        return matching_book_ids
+
+    def get_book_ids_for_publisher(self, publisher_name: str):
+        matching_book_ids = [book.book_id for book in self.__books if publisher_name == book.publisher.name]
         if len(matching_book_ids) == 0:
             return None
         return matching_book_ids
-    
+
+    def get_book_ids_for_year(self, year: int):
+        matching_book_ids = [book.book_id for book in self.__books if int(year) == book.release_year]
+        if len(matching_book_ids) == 0:
+            return None
+        return matching_book_ids
+
+    def get_book_ids_all(self):
+        book_ids = [book.book_id for book in self.__books]
+        if len(book_ids) == 0:
+            return None
+        return book_ids
+
     def get_books_by_id(self, id_list):
         # Strip out unrelated IDs
         correct_ids = [id_val for id_val in id_list if id_val in self.__books_index]
@@ -167,6 +191,7 @@ class MemoryRepository(AbstractRepository):
         # Retrieve the books
         books = [self.__books_index[id_val] for id_val in correct_ids]
         return books
+
 
 def populate(data_path: Path, repo: MemoryRepository):
     # Using the JSON data reader we can populate the repository
@@ -179,6 +204,7 @@ def populate(data_path: Path, repo: MemoryRepository):
         repo.add_book(book)
     users = load_users(data_path, repo)
     load_reviews(data_path, repo, users)
+
 
 def load_users(data_path: Path, repo: MemoryRepository):
     users = dict()
@@ -193,6 +219,7 @@ def load_users(data_path: Path, repo: MemoryRepository):
         users[data_row[0]] = user
     return users
 
+
 def read_csv_file(filename: str):
     with open(filename, encoding='utf-8-sig') as infile:
         reader = csv.reader(infile)
@@ -206,6 +233,7 @@ def read_csv_file(filename: str):
             row = [item.strip() for item in row]
             yield row
 
+
 def load_reviews(data_path: Path, repo: MemoryRepository, users):
     comments_filename = str(Path(data_path) / "reviews.csv")
     for data_row in read_csv_file(comments_filename):
@@ -217,4 +245,4 @@ def load_reviews(data_path: Path, repo: MemoryRepository, users):
 
         )
         repo.add_review(review)
-
+        repo.add_book(book)
