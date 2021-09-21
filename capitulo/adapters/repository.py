@@ -152,3 +152,8 @@ class AbstractRepository(abc.ABC):
     def get_book_ids_for_year(self, year: int):
         """ Returns all the book ids for a given year """
         raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_book_ids_all(self):
+        """ Returns all book ids """
+        raise NotImplementedError

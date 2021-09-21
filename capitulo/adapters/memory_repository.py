@@ -170,12 +170,16 @@ class MemoryRepository(AbstractRepository):
         return matching_book_ids
     
     def get_book_ids_for_year(self, year: int):
-
         matching_book_ids = [ book.book_id for book in self.__books if int(year) == book.release_year ]
         if len(matching_book_ids) == 0:
             return None
         return matching_book_ids
     
+    def get_book_ids_all(self):
+        book_ids = [ book.book_id for book in self.__books ]
+        if len(book_ids) == 0:
+            return None
+        return book_ids
     
     def get_books_by_id(self, id_list):
         # Strip out unrelated IDs

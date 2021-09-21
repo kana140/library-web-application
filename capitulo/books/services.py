@@ -59,7 +59,6 @@ def get_books_by_author(author, repo: AbstractRepository):
     books = books_to_dict(repo.get_books_by_author(author))
     return books
 
-
 def get_books_by_publisher(publisher, repo: AbstractRepository):
     books = books_to_dict(repo.get_books_by_publisher(publisher))
     return books

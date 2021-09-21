@@ -20,9 +20,11 @@ def home():
     else:
         page = int(page)
 
-    books = services.get_all_books(repo.repo_instance)
+    book_ids = services.get_book_ids_all(repo.repo_instance)
 
-    number_of_pages = math.ceil(len(books) / books_per_page)
+    books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
+
+    number_of_pages = math.ceil(len(book_ids) / books_per_page)
 
     page_list = []
     for i in range(1, number_of_pages + 1):

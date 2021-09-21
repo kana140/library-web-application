@@ -57,3 +57,15 @@ def books_to_dict(books: Iterable[Book]):
 def get_all_books(repo: AbstractRepository):
     books = books_to_dict(repo.get_all_books())
     return books
+
+def get_book_ids_all(repo:AbstractRepository):
+    books = repo.get_book_ids_all()
+    return books
+
+def get_books_by_id(id_list, repo: AbstractRepository):
+    books = repo.get_books_by_id(id_list)
+
+    # Convert to dict form
+    books_as_dict = books_to_dict(books)
+
+    return books_as_dict
