@@ -1,2 +1,2 @@
-id,user-name, book-id, review-text, timestamp
-1,hotdog_lover,23272155,"Oh no, COVID-19 has hit New Zealand",2020-02-28 14:31:26
+id,user-id,book-id,review-text,rating,timestamp
+1,1,23272155,"terrible, just terrible",5,2020-02-28 14:31:26

@@ -6,7 +6,7 @@ from flask import request, render_template, redirect, url_for, session
 from better_profanity import profanity
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, HiddenField, SubmitField, IntegerField, validators
-from wtforms.validators import DataRequired, Length, ValidationError
+from wtforms.validators import DataRequired, Length, ValidationError, NumberRange
 
 import capitulo.adapters.repository as repo
 import capitulo.utilities.utilities as utilities
@@ -18,7 +18,7 @@ from capitulo.authentication.authentication import login_required
 books_blueprint = Blueprint('books_bp', __name__)
 
 
-@books_blueprint.route('/<int:book_id>')
+@books_blueprint.route('/<int:book_id>', methods=['GET', 'POST'])
 def individual_book(book_id):
     # Read query parameters.
     show_reviews = request.args.get('view_reviews_for')
@@ -256,8 +256,8 @@ class ReviewForm(FlaskForm):
     review = TextAreaField('Review', [
         DataRequired(),
         Length(min=4, message='Your review is too short'),
-        ProfanityFree(message='Your comment must not contain profanity')])
-    rating = IntegerField('Rating',
-            validators=[validators.Required(), validators.NumberRange(min=1, max=5)])
+        ProfanityFree(message='Your review must not contain profanity')])
+    rating = IntegerField('Rating (1-5)',
+            validators=[validators.Required(), validators.NumberRange(min=1, max=5, message='Enter an integer from 1-5')])
     book_id = HiddenField("Book id")
     submit = SubmitField('Submit')

@@ -1,3 +1,5 @@
+import csv
+
 from capitulo.adapters.jsondatareader import BooksJSONReader as reader
 from pathlib import Path
 from datetime import date, datetime
@@ -8,7 +10,8 @@ from bisect import bisect, bisect_left, insort_left
 from werkzeug.security import generate_password_hash
 
 from capitulo.adapters.repository import AbstractRepository, RepositoryException
-from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory
+from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory, make_review
+
 
 class MemoryRepository(AbstractRepository):
     # Books ordered by title, not id. id is assumed unique
@@ -174,3 +177,44 @@ def populate(data_path: Path, repo: MemoryRepository):
     books_to_load = our_reader.dataset_of_books
     for book in books_to_load:
         repo.add_book(book)
+    users = load_users(data_path, repo)
+    load_reviews(data_path, repo, users)
+
+def load_users(data_path: Path, repo: MemoryRepository):
+    users = dict()
+
+    users_filename = str(Path(data_path) / "users.csv")
+    for data_row in read_csv_file(users_filename):
+        user = User(
+            user_name=data_row[1],
+            password=generate_password_hash(data_row[2])
+        )
+        repo.add_user(user)
+        users[data_row[0]] = user
+    return users
+
+def read_csv_file(filename: str):
+    with open(filename, encoding='utf-8-sig') as infile:
+        reader = csv.reader(infile)
+
+        # Read first line of the the CSV file.
+        headers = next(reader)
+
+        # Read remaining rows from the CSV file.
+        for row in reader:
+            # Strip any leading/trailing white space from data read.
+            row = [item.strip() for item in row]
+            yield row
+
+def load_reviews(data_path: Path, repo: MemoryRepository, users):
+    comments_filename = str(Path(data_path) / "reviews.csv")
+    for data_row in read_csv_file(comments_filename):
+        review = make_review(
+            book=repo.get_book(int(data_row[2])),
+            review_text=data_row[3],
+            rating=int(data_row[4]),
+            user=users[data_row[1]],
+
+        )
+        repo.add_review(review)
+

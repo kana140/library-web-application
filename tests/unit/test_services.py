@@ -23,12 +23,8 @@ def test_can_add_user(in_memory_repo):
 
 
 def test_cannot_add_user_with_existing_name(in_memory_repo):
-    auth_services.add_user('thorke', '1234srh', in_memory_repo)
-    user_name = 'thorke'
-    password = 'abcd1A23'
-
     with pytest.raises(auth_services.NameNotUniqueException):
-        auth_services.add_user(user_name, password, in_memory_repo)
+        auth_services.add_user('thorke', 'abcd1A23', in_memory_repo)
 
 
 def test_authentication_with_valid_credentials(in_memory_repo):

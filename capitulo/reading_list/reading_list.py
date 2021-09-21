@@ -10,7 +10,9 @@ from capitulo.authentication.authentication import login_required
 reading_list_blueprint = Blueprint('reading_list_bp', __name__)
 
 
-@reading_list_blueprint.route('/reading_list', methods=['GET'])
+@reading_list_blueprint.route('/reading_list', methods=['GET', 'POST'])
+@reading_list_blueprint.route('/reading_list/book_added=<book>', methods=['GET', 'POST'])
+@reading_list_blueprint.route('/reading_list/book_removed=<book>', methods=['GET', 'POST'])
 @login_required
 def reading_list():
     user_name = session['user_name']
@@ -26,7 +28,7 @@ def reading_list():
         release_year_urls=utilities.get_release_years_and_urls())  # Template for reading list
 
 
-@reading_list_blueprint.route('/reading_list/book_added', methods=['GET', 'POST'])
+@reading_list_blueprint.route('/reading_list/add_book', methods=['GET', 'POST'])
 @login_required
 def add_book_to_reading_list():
     user_name = session['user_name']
@@ -41,10 +43,10 @@ def add_book_to_reading_list():
     read_list = services.get_reading_list(user_name,  repo.repo_instance)
 
     # Cause the web browser to display the page of the reading list with the new added book, including old ones
-    return redirect(url_for('reading_list_bp.reading_list', book=book, read_list=read_list))
+    return redirect(url_for('reading_list_bp.reading_list', book_added=book))
 
 
-@reading_list_blueprint.route('/reading_list/book_removed', methods=['GET', 'POST'])
+@reading_list_blueprint.route('/reading_list/remove_book', methods=['GET', 'POST'])
 @login_required
 def remove_book_from_reading_list():
     user_name = session['user_name']
@@ -58,4 +60,4 @@ def remove_book_from_reading_list():
     read_list = services.get_reading_list(user_name, repo.repo_instance)
 
     # Cause the web browser to display the page of the reading list with the new added book, including old ones
-    return redirect(url_for('reading_list_bp.reading_list', book=book, read_list=read_list))
+    return redirect(url_for('reading_list_bp.reading_list', book_removed=book))

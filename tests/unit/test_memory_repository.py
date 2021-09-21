@@ -187,11 +187,12 @@ def test_repository_does_not_add_a_review_without_a_book_properly_attached(in_me
 
 
 def test_repository_can_retrieve_reviews(in_memory_repo):
-    assert len(in_memory_repo.get_reviews()) == 0
+    # Currently 1 review in the repository
+    assert len(in_memory_repo.get_reviews()) == 1
     review = make_review(Book(45242, 'bookbook'), 'not the best', 4, User('badat', 'Hello343'))
     in_memory_repo.add_review(review)
-    assert len(in_memory_repo.get_reviews()) == 1
+    assert len(in_memory_repo.get_reviews()) == 2
     review2 = make_review(Book(23553, "my life"), 'cool', 4, User('thorke', 'feoiajf23'))
     in_memory_repo.add_review(review2)
-    assert len(in_memory_repo.get_reviews()) == 2
+    assert len(in_memory_repo.get_reviews()) == 3
 
