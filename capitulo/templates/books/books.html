@@ -17,7 +17,7 @@
 						<div class="sub-flex">
 						<h2>{{ book.title }} </h2>
 							<i> {{ book.reviews|length }} reviews </i>
-						<p>{{ book.description }} </p>
+						<p class="book-desc">{{ book.description }} </p>
 					</div>
 					{% if 'user_name' in session %}
 					<div id="reading_list">

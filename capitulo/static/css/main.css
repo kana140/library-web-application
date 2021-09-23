@@ -57,7 +57,7 @@ header {
 		margin-right: 0%;
 	}
 	#body {
-		margin-left: 0.5%;
+		margin-left: 2%;
 	}
 }
 @media (min-width: 1200px) {
@@ -66,10 +66,10 @@ header {
 		justify-content: flex-start;
 		align-items: center;
 		padding: 0.8em;
+		margin-left: 2%
 	}
-	#body,
-	#header-container {
-		margin-left: 2%;
+	#body {
+		margin-right: 5%;
 	}
 }
 @media (min-width: 1350px) {
@@ -82,6 +82,7 @@ header {
 	#body,
 	#header-container {
 		margin-left: 5%;
+		margin-right: 10%
 	}
 }
 @media (min-width: 1600px) {
@@ -94,6 +95,7 @@ header {
 	#body,
 	#header-container {
 		margin-left: 8%;
+		margin-right: 15%
 	}
 }
 
@@ -107,6 +109,7 @@ header {
 	#body,
 	#header-container {
 		margin-left: 10%;
+		margin-right: 20%
 	}
 }
 
@@ -768,7 +771,7 @@ input[type="submit"]:hover {
 .radio-field {
     float: left;
     padding: 5px;
-    marin: 1px;
+    margin: 1px;
 }
 
 .form-rating-field {
@@ -785,4 +788,42 @@ margin-right: 4em;
 
 .book {
     margin-right: 2em;
+}
+
+#home-main p {
+	margin-bottom: 2em;
+}
+
+#home-main h2 {
+	margin-bottom: 1em;
+}
+
+#home-main .landing-page-header {
+	margin-right: 0.5em;
+}
+
+.indicator {
+	color: #468faf;
+	margin-bottom: 1em;
+}
+
+#review-length {
+	margin-bottom: 1em;
+}
+
+.btn-general {
+	margin-bottom: 1.5em;
+}
+
+.reviews-container p {
+	margin-bottom: 3em;
+}
+
+.book-desc {
+	margin-top: 1em;
+}
+
+.r-l-title-container {
+	width: 9em;
+	margin-top: 1em;
 }

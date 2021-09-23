@@ -17,23 +17,28 @@
 	</div>
 
 	<div class="reviews-container">
-			<div class="left">
-				<div id="review-length">
+		<div class="left">
+			<div id="review-length">
 				<h1>{{ book.reviews|length }} Reviews</h1>
-				</div>
-				<button class="btn-general" onclick="location.href='{{ book.add_review_url }}'">Add Review</button>
 			</div>
-			<p>
-				{% if book.reviews|length == 0 %} Be the first to leave a review! {%
-				endif %}
-			</p>
+			<button
+				class="btn-general"
+				onclick="location.href='{{ book.add_review_url }}'"
+			>
+				Add Review
+			</button>
+		</div>
+		<p>
+			{% if book.reviews|length == 0 %} Be the first to leave a review! {% endif
+			%}
+		</p>
 
 		<div class="review-obj">
 			{% for review in book.reviews %}
 			<div id="review-obj">
-					<h3> {{review.user_name}} rates it {{review.rating}} out of 5 </h3>
-					<i>	{{review.review_text}} </i>
-					<p> {{review.timestamp}} </p>
+				<h3>{{review.user_name}} rates it {{review.rating}} out of 5</h3>
+				<i> {{review.review_text}} </i>
+				<p>{{review.timestamp}}</p>
 			</div>
 			{% endfor %}
 		</div>
@@ -46,20 +51,17 @@
 			<!-- Need to include this token - Flask WTForms requires it. -->
 			<br />
 			<div class="form-rating-field">
-				<div id="rating-label"> <b>{{form.rating.label}}</b> </div>
+				<div id="rating-label"><b>{{form.rating.label}}</b></div>
 				<div id="rating">
-				{% for subfield in form.rating %}
-					<div class="radio-field">
-    					{{ subfield }}{{ subfield.label }}
-					</div>
-				{% endfor %}
-				{% if form.review.errors %}
-				<ul class="errors">
-					{% for error in form.review.errors %}
-					<li>{{error}}</li>
-					{% endfor %}
-				</ul>
-				{% endif %}
+					{% for subfield in form.rating %}
+					<div class="radio-field">{{ subfield }}{{ subfield.label }}</div>
+					{% endfor %} {% if form.review.errors %}
+					<ul class="errors">
+						{% for error in form.review.errors %}
+						<li>{{error}}</li>
+						{% endfor %}
+					</ul>
+					{% endif %}
 				</div>
 			</div>
 			<div class="form-review-field">
