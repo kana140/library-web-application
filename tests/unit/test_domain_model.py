@@ -416,6 +416,8 @@ class TestUser:
         user1.add_to_reading_list(book1)
         assert len(user1.reading_list) == 1
         assert user1.reading_list[0] == book1
+        user1.remove_from_reading_list(book1)
+        assert len(user1.reading_list) == 0
 
 
 @pytest.fixture

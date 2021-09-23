@@ -7,6 +7,7 @@ from capitulo.books import services as books_services
 from capitulo.authentication import services as auth_services
 from capitulo.books.services import NonExistentBookException
 from capitulo.reading_list import services as read_services
+from capitulo.utilities import services as util_services
 
 
 def test_can_add_user(in_memory_repo):
@@ -25,6 +26,11 @@ def test_can_add_user(in_memory_repo):
 def test_cannot_add_user_with_existing_name(in_memory_repo):
     with pytest.raises(auth_services.NameNotUniqueException):
         auth_services.add_user('thorke', 'abcd1A23', in_memory_repo)
+
+
+def test_can_get_user(in_memory_repo):
+    user = auth_services.get_user('thorke', in_memory_repo)
+    assert user is not None
 
 
 def test_authentication_with_valid_credentials(in_memory_repo):
@@ -139,14 +145,77 @@ def test_get_books_by_author(in_memory_repo):
     assert len(book_ids) == 2
 
 
+def test_cannot_get_book_ids_for_non_existent_author(in_memory_repo):
+    book_ids = books_services.get_book_ids_for_author("dog", in_memory_repo)
+    assert book_ids == []
+
+
 def test_get_book_ids_for_publisher(in_memory_repo):
     book_ids = books_services.get_books_by_publisher("DC Comics", in_memory_repo)
     assert len(book_ids) == 1
 
 
+def test_cannot_get_book_ids_for_non_existent_publisher(in_memory_repo):
+    book_ids = books_services.get_book_ids_for_author("dog", in_memory_repo)
+    assert book_ids == []
+
+
 def test_get_book_ids_for_release_year(in_memory_repo):
     book_ids = books_services.get_books_by_release_year(1997, in_memory_repo)
     assert len(book_ids) == 1
+
+
+def test_cannot_get_book_ids_for_non_existent_year(in_memory_repo):
+    book_ids = books_services.get_book_ids_for_year(100, in_memory_repo)
+    assert book_ids == None
+
+
+def test_can_get_books_by_author(in_memory_repo):
+    books = books_services.get_books_by_author("Garth Ennis", in_memory_repo)
+    assert len(books) == 2
+
+
+def test_can_get_books_by_publisher(in_memory_repo):
+    books = books_services.get_books_by_publisher("DC Comics", in_memory_repo)
+    assert len(books) == 1
+
+
+def test_can_get_books_by_release_year(in_memory_repo):
+    books = books_services.get_books_by_release_year(1997, in_memory_repo)
+    assert len(books) == 1
+
+
+def test_can_get_languages(in_memory_repo):
+    languages = util_services.get_languages(in_memory_repo)
+    assert len(languages) == 6
+
+
+def test_can_get_authors(in_memory_repo):
+    authors = util_services.get_authors(in_memory_repo)
+    assert len(authors) == 31
+
+
+def test_can_get_publishers(in_memory_repo):
+    publishers = util_services.get_publishers(in_memory_repo)
+    assert len(publishers) == 12
+
+
+def test_can_get_release_years(in_memory_repo):
+    years = util_services.get_release_years(in_memory_repo)
+    assert len(years) == 8
+    assert 1997 in years
+    assert 2011 in years
+
+
+def test_can_get_all_books(in_memory_repo):
+    books = util_services.get_all_books(in_memory_repo)
+    assert len(books) == 20
+
+
+def test_can_get_books_by_author(in_memory_repo):
+    books = util_services.get_books_by_author("Mike Wolfer", in_memory_repo)
+    assert books[0].title == "Crossed, Volume 15"
+
 
 def test_get_reviews_for_book(in_memory_repo):
     user_name = 'gmichael'
