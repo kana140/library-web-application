@@ -11,6 +11,7 @@ class NonExistentBookException(Exception):
 class UnknownUserException(Exception):
     pass
 
+
 def review_to_dict(review: Review):
     review_dict = {
         'book_id': review.book.book_id,
@@ -25,6 +26,7 @@ def review_to_dict(review: Review):
 def reviews_to_dict(reviews: Iterable[Review]):
     return [review_to_dict(review) for review in reviews]
 
+
 def author_to_dict(author: Author):
     author_dict = {
         'author_id': author.unique_id,
@@ -33,8 +35,13 @@ def author_to_dict(author: Author):
     return author_dict
 
 
+def get_books_by_author(author):
+    return
+
+
 def authors_to_dict(authors: Iterable[Author]):
     return [author_to_dict(author) for author in authors]
+
 
 def book_to_dict(book: Book):
     book_dict = {
@@ -51,16 +58,20 @@ def book_to_dict(book: Book):
     }
     return book_dict
 
+
 def books_to_dict(books: Iterable[Book]):
     return [book_to_dict(book) for book in books]
+
 
 def get_all_books(repo: AbstractRepository):
     books = books_to_dict(repo.get_all_books())
     return books
 
-def get_book_ids_all(repo:AbstractRepository):
+
+def get_book_ids_all(repo: AbstractRepository):
     books = repo.get_book_ids_all()
     return books
+
 
 def get_books_by_id(id_list, repo: AbstractRepository):
     books = repo.get_books_by_id(id_list)
@@ -69,3 +80,8 @@ def get_books_by_id(id_list, repo: AbstractRepository):
     books_as_dict = books_to_dict(books)
 
     return books_as_dict
+
+
+def get_books_by_language(language, repo: AbstractRepository):
+    books = books_to_dict(repo.get_books_by_language(language))
+    return books

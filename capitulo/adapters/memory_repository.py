@@ -162,7 +162,7 @@ class MemoryRepository(AbstractRepository):
         matching_book_ids = []
         for book in self.__books:
             for author in book.authors:
-                if int(author_id) == int(author.unique_id):
+                if author_id == int(author.unique_id):
                     matching_book_ids.append(book.book_id)
         return matching_book_ids
 
@@ -245,4 +245,3 @@ def load_reviews(data_path: Path, repo: MemoryRepository, users):
 
         )
         repo.add_review(review)
-        repo.add_book(book)

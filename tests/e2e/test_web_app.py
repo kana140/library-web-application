@@ -152,7 +152,7 @@ def test_books_with_language(client):
 
 def test_books_with_author(client):
     # Check that we can retrieve page depending on author chosen
-    response = client.get('/books_by_author?author_name=Andrea+DiVito')
+    response = client.get('/books_by_author?author_name=Andrea+DiVito&author_id=79136')
     assert response.status_code == 200
 
     # Check that the page includes the first book

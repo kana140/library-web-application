@@ -34,6 +34,23 @@
 			{{form.csrf_token}}
 			<!-- Need to include this token - Flask WTForms requires it. -->
 			<br />
+			<div class="form-rating-field">
+				<div id="rating-label"> <b>{{form.rating.label}}</b> </div>
+				<div id="rating">
+				{% for subfield in form.rating %}
+					<div class="radio-field">
+    					{{ subfield }}{{ subfield.label }}
+					</div>
+				{% endfor %}
+				{% if form.review.errors %}
+				<ul class="errors">
+					{% for error in form.review.errors %}
+					<li>{{error}}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+				</div>
+			</div>
 			<div class="form-review-field">
 				<b>{{form.review.label}} </b>
 				<div>
@@ -48,22 +65,7 @@
 				</ul>
 				{% endif %}
 			</div>
-			<div class="form-rating-field">
-				<b>{{form.rating.label}} </b>
-				<div>
-					{{form.rating(placeholder="Enter a rating from 1-5", class="textarea",
-					cols="20", rows="1", wrap="hard")}}
-				</div>
-				{% if form.review.errors %}
-				<ul class="errors">
-					{% for error in form.review.errors %}
-					<li>{{error}}</li>
-					{% endfor %}
-				</ul>
-				{% endif %}
-			</div>
 			{{ form.submit }}
-			<!-- may or may not need -->
 		</form>
 	</div>
 </main>

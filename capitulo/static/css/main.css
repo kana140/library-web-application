@@ -563,6 +563,12 @@ input[type="submit"]:hover {
 	margin-bottom: 30px;
 }
 
+.reading-list {
+	display: flex;
+	flex-wrap:wrap;
+	margin-right: 5em;
+}
+
 .item-row {
 	list-style: none;
 }
@@ -572,11 +578,22 @@ input[type="submit"]:hover {
 }
 
 .btn-general {
-	float: center;
+	background-color: #468faf;
+	border: none;
+	color: white;
+	padding: 10px 14px;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 14px;
+	cursor: pointer;
+	transition-duration: 0.2s;
 }
 
-.reading-list {
-	width: 50px;
+.btn-general:hover {
+	background-color: RoyalBlue;
+	color: white;
+	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+		0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
 .remove-btn {
@@ -681,5 +698,91 @@ input[type="submit"]:hover {
 .search-or-browse {
 	font-size: 38px;
 	color: #468faf;
-	margin-bottom: 1em;
+	margin-bottom: 1.5em;
+}
+
+.review-obj {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.review-obj > div{
+    width: 100;
+    height: 200;
+    font-size: 1em;
+    background-color: #f8fbfc;
+    border: 1.8px #306278;
+    border-style: solid none;
+    }
+
+#parent {
+  display: flex;
+}
+#wide {
+  width:100
+  /* Grow to rest of container */
+  background: lightgreen;}
+
+.box{
+  position: relative;
+  margin: 0.2em;
+  margin-left: 0.6em;
+}
+
+.input {
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    background: none;
+    border: 3px solid #468faf;
+    border-radius: 50px;
+    box-sizing: border-box;
+    font-size: 20px;
+    outline: none;
+    transition: .5s;
+}
+
+.box:hover input{
+    width: 350px;
+    border-radius: 10px;
+}
+
+.box i{
+    position: absolute;
+    top: 40%;
+    right: 6.5px;
+    transform: translate(-50%,-50%);
+    font-size: 21px;
+    color: #468faf;
+    transition: .2s;
+}
+
+.box:hover i{
+    opacity: 0;
+    z-index: -1;
+}
+
+
+
+.radio-field {
+    float: left;
+    padding: 5px;
+    marin: 1px;
+}
+
+.form-rating-field {
+float:left;
+}
+
+.review-length{
+margin: 0px;
+float:left;}
+
+.reviews-container {
+margin-right: 4em;
+}
+
+.book {
+    margin-right: 2em;
 }

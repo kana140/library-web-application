@@ -15,25 +15,29 @@
 			</div>
 		</div>
 	</div>
-	<div class="reviews">
-		<h1>{{ book.reviews|length }} Reviews</h1>
-		<div class="review-obj">
+
+	<div class="reviews-container">
+			<div class="left">
+				<div id="review-length">
+				<h1>{{ book.reviews|length }} Reviews</h1>
+				</div>
+				<button class="btn-general" onclick="location.href='{{ book.add_review_url }}'">Add Review</button>
+			</div>
 			<p>
 				{% if book.reviews|length == 0 %} Be the first to leave a review! {%
 				endif %}
 			</p>
-			<button
-				class="btn-general"
-				onclick="location.href='{{ book.add_review_url }}'"
-			>
-				Add Review
-			</button>
+
+		<div class="review-obj">
 			{% for review in book.reviews %}
-			<p>
-				{{review.review_text}}, by {{review.user_name}}, {{review.timestamp}}
-			</p>
+			<div id="review-obj">
+					<h3> {{review.user_name}} rates it {{review.rating}} out of 5 </h3>
+					<i>	{{review.review_text}} </i>
+					<p> {{review.timestamp}} </p>
+			</div>
 			{% endfor %}
 		</div>
 	</div>
 </main>
 {% endblock %}
+

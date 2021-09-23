@@ -157,3 +157,8 @@ class AbstractRepository(abc.ABC):
     def get_book_ids_all(self):
         """ Returns all book ids """
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_languages(self):
+        """ Returns all languages """
+        raise NotImplementedError

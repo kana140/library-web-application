@@ -29,3 +29,6 @@ def get_all_books(repo: AbstractRepository):
     books = repo.get_all_books()
     return books
 
+def get_books_by_author(author, repo: AbstractRepository):
+    books = repo.get_books_by_author(author)
+    return books

@@ -5,7 +5,7 @@ from flask import request, render_template, redirect, url_for, session
 
 from better_profanity import profanity
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, HiddenField, SubmitField, IntegerField, validators
+from wtforms import TextAreaField, HiddenField, SubmitField, IntegerField, validators, RadioField
 from wtforms.validators import DataRequired, Length, ValidationError, NumberRange
 
 import capitulo.adapters.repository as repo
@@ -27,11 +27,11 @@ def individual_book(book_id):
     book = services.get_book(book_id, repo.repo_instance)
     book['add_review_url'] = url_for('books_bp.review_book', book=book['id'])
     return render_template('individual_book.html', book=book, show_reviews_for_book=show_reviews,
-        author_urls=utilities.get_authors_and_urls(),
-        language_urls=utilities.get_languages_and_urls(),
-        publisher_urls=utilities.get_publishers_and_urls(),
-        release_year_urls=utilities.get_release_years_and_urls()
-    )
+                           author_urls=utilities.get_authors_and_urls(),
+                           language_urls=utilities.get_languages_and_urls(),
+                           publisher_urls=utilities.get_publishers_and_urls(),
+                           release_year_urls=utilities.get_release_years_and_urls()
+                           )
 
 
 @books_blueprint.route('/books_by_language', methods=['GET'])
@@ -88,7 +88,7 @@ def books_by_author():
     else:
         page = int(page)
 
-    book_ids = services.get_book_ids_for_author(author_id, repo.repo_instance)
+    book_ids = services.get_book_ids_for_author(int(author_id), repo.repo_instance)
 
     # Retrieve the set books we want to display based on the page
     books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)
@@ -165,7 +165,7 @@ def books_by_release_year():
         page = 1
     else:
         page = int(page)
-    
+
     book_ids = services.get_book_ids_for_year(int(release_year), repo.repo_instance)
 
     # Retrieve the set books we want to display based on the page
@@ -260,7 +260,8 @@ class ReviewForm(FlaskForm):
         DataRequired(),
         Length(min=4, message='Your review is too short'),
         ProfanityFree(message='Your review must not contain profanity')])
-    rating = IntegerField('Rating (1-5)',
-            validators=[validators.Required(), validators.NumberRange(min=1, max=5, message='Enter an integer from 1-5')])
+    # rating = IntegerField('Rating (1-5)',
+    #        validators=[validators.Required(), validators.NumberRange(min=1, max=5, message='Enter an integer from 1-5')])
+    rating = RadioField('Rating', choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')])
     book_id = HiddenField("Book id")
     submit = SubmitField('Submit')

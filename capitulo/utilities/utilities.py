@@ -46,3 +46,11 @@ def get_book(book_id):
 def get_all_books():
     books = services.get_all_books(repo.repo_instance)
     return books
+
+def get_languages():
+    languages = services.get_languages(repo.repo_instance)
+    return languages
+
+def get_books_by_author(author):
+    books = services.get_books_by_author(author, repo.repo_instance)
+    return books

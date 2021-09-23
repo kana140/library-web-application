@@ -1,2 +1,5 @@
 id,user-id,book-id,review-text,rating,timestamp
-1,1,23272155,"terrible, just terrible",5,2020-02-28 14:31:26
+1,1,23272155,"Terrible, just terrible.",5,2020-02-28 14:31:26
+1,1,707611,"Best book ever, the best",5,2020-02-28 14:31:26
+1,1,707611,"Wow! This book was incredible. Super awe-inspiring",5,2020-02-28 14:31:26
+1,1,707611,"one of the best books ever, brings me back to the time i was a child and no one would talk to me not even my mum or dad good times",5,2020-02-28 14:31:26
