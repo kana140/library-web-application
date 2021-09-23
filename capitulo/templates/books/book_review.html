@@ -1,10 +1,10 @@
 {% extends 'layout.html' %} {% block content %}
 <main id="main">
 	<div class="book">
+		<h1 id="book-header">{{ book.title }}</h1>
 		<div class="book-obj">
 			<img src="{{ book.image_hyperlink }}" width="300" height="400" />
 			<div class="sub-flex">
-				<h2>{{ book.title }}</h2>
 				<h3>Release Year: {{ book.release_year }}</h3>
 				<h3>Publisher: {{ book.publisher }}</h3>
 				<h4>
@@ -15,15 +15,26 @@
 			</div>
 		</div>
 	</div>
-	<div class="reviews">
-		<h1>{{ book.reviews|length }} Reviews</h1>
-		<div class="review-obj">
-			{% if book.reviews|length == 0 %}
-			<i>Be the first to leave a review!</i>
-			{% endif %} {% for review in book.reviews %}
+
+	<div class="reviews-container">
+			<div class="left">
+				<div id="review-length">
+				<h1>{{ book.reviews|length }} Reviews</h1>
+				</div>
+				<button class="btn-general" onclick="location.href='{{ book.add_review_url }}'">Add Review</button>
+			</div>
 			<p>
-				{{review.review_text}}, by {{review.user_name}}, {{review.timestamp}}
+				{% if book.reviews|length == 0 %} Be the first to leave a review! {%
+				endif %}
 			</p>
+
+		<div class="review-obj">
+			{% for review in book.reviews %}
+			<div id="review-obj">
+					<h3> {{review.user_name}} rates it {{review.rating}} out of 5 </h3>
+					<i>	{{review.review_text}} </i>
+					<p> {{review.timestamp}} </p>
+			</div>
 			{% endfor %}
 		</div>
 	</div>
