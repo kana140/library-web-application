@@ -251,6 +251,9 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_book_ids_all(self):
         pass
 
+    def get_books_by_id(self, id_list):
+        books = self._session_cm.session.query(Book).filter(Book._Book__id.in_(id_list)).all()
+        return books
 
 
 
