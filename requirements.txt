@@ -6,3 +6,4 @@ flask-wtf==0.15.0
 password-validator==1.0
 WTForms~=2.3.3
 Werkzeug~=1.0.1
+SQLAlchemy~=1.4.25
