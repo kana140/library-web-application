@@ -43,7 +43,7 @@ reading_list_table = Table(
     'reading_list', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', ForeignKey('users.id')),
-    Column('books', ForeignKey('books.id'))
+    Column('book', ForeignKey('books.id'))
 )
 
 publishers_table = Table(
@@ -75,6 +75,7 @@ published_books_table = Table(
 )
 
 def map_model_to_tables():
+    
     mapper(model.User, users_table, properties={
         '_User__user_name': users_table.c.user_name,
         '_User__password': users_table.c.password,

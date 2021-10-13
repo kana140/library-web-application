@@ -3,11 +3,12 @@ from typing import List
 
 from sqlalchemy import desc, asc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy import insert
 
 from sqlalchemy.orm import scoped_session
 from flask import _app_ctx_stack
 
-from capitulo.domain.model import User, Book, Review, Publisher, Author
+from capitulo.domain.model import User, Book, Review, Publisher, Author, ReadingListBook
 from capitulo.adapters.repository import AbstractRepository
 
 
@@ -183,7 +184,7 @@ class SqlAlchemyRepository(AbstractRepository):
         return book
 
     def get_last_book(self) -> Book:
-        book = self._session_cm.session(Book).first()
+        book = self._session_cm.session.query(Book).order_by(Book.book_id.desc()).first()
         return book
 
     def get_languages(self):
@@ -234,22 +235,52 @@ class SqlAlchemyRepository(AbstractRepository):
         return number_of_reviews
 
     def get_reading_list(self, user) -> List[Book]:
-        pass
+        # Implement a method of narrowing down the books to only those that are linked to the specified user
+        reading_list = self._session_cm.session.query(ReadingListBook).filter(ReadingListBook.user.user_name.in_([user.user_name])).all()
+        return reading_list
 
-    def add_book_to_reading_list(self, book: Book, user):
+    def add_book_to_reading_list(self, book: Book, user: User):
+        super().add_book_to_reading_list(book, user)
+        with self._session_cm as scm:
+            scm.session.add(ReadingListBook(user, book))
+            scm.commit()
         pass
 
     def remove_book_from_reading_list(self, book: Book, user):
+        super().remove_book_from_reading_list(book, user)
+        with self._session_cm as scm:
+            scm.session.delete(ReadingListBook(user, book))
+            scm.commit()
         pass
 
     def get_book_ids_for_language(self, language: str):
-        pass
+        book_ids = []
+        row = self._session_cm.session.execute('SELECT id FROM books WHERE language = :language',
+                                               {'language': language}).fetchall()
+        if row is None:
+            # No author with the name target_author - create an empty list
+            book_ids = list()
+        else:
+            book_ids = [id[0] for id in row]
+        return book_ids
 
     def get_book_ids_for_year(self, year: int):
-        pass
+        book_ids = []
+        row = self._session_cm.session.execute('SELECT id FROM books WHERE release_year = :year',
+                                               {'year': year}).fetchall()
+        if row is None:
+            # No author with the name target_author - create an empty list
+            book_ids = list()
+        else:
+            book_ids = [id[0] for id in row]
+        return book_ids
 
     def get_book_ids_all(self):
-        pass
+        book_ids = []
+
+        row = self._session_cm.sesion.execute('SELECT id FROM books').fetchall()
+        book_ids = [val[0] for val in row]
+        return book_ids
 
     def get_books_by_id(self, id_list):
         books = self._session_cm.session.query(Book).filter(Book._Book__id.in_(id_list)).all()

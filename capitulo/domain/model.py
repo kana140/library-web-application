@@ -349,11 +349,14 @@ class User:
 
     def add_to_reading_list(self, book: Book):
         if isinstance(book, Book):
-            self.__reading_list.append(book)
+            self.__reading_list.append(ReadingListBook(self, book))
 
     def remove_from_reading_list(self, book: Book):
         if isinstance(book, Book):
-            self.__reading_list.remove(book)
+            for i in range(len(self.__reading_list)):
+                if self.__reading_list[i].book == book:
+                    self.__reading_list.pop(i)
+                    break
 
     @property
     def pages_read(self) -> int:
@@ -383,6 +386,35 @@ class User:
 
     def __hash__(self):
         return hash(self.user_name)
+
+
+class ReadingListBook:
+
+    def __init__(self, user: User, rlbook: Book):
+        self.__user = user
+        self.__book = rlbook
+    
+    @property
+    def user(self) -> User:
+        return self.__user
+    
+    @property
+    def book(self) -> Book:
+        return self.__book
+    
+    def __repr__(self):
+        return f'<Reading List Book {self.__book}>'
+    
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.book.book_id == other.book.book_id
+
+    def __lt__(self, other):
+        return self.book.book_id < other.book.book_id
+
+    def __hash__(self):
+        return hash(self.book.book_id)
 
 class BooksInventory:
 
