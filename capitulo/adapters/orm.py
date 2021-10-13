@@ -84,7 +84,8 @@ def map_model_to_tables():
     mapper(model.Review, reviews_table, properties={
         '_Review__review_text': reviews_table.c.review_text,
         '_Review__timestamp': reviews_table.c.timestamp,
-        '_Review__user_id': reviews_table.c.user_id
+        '_Review__user_id': reviews_table.c.user_id,
+        '_Review__book_id': reviews_table.c.book_id
     })
     mapper(model.Book, books_table, properties={
         '_Book__id': books_table.c.id,
@@ -110,5 +111,6 @@ def map_model_to_tables():
         '_Author__books': relationship(model.Book, secondary=authored_books_table, back_populates='_Book__authors')
     })
     mapper(model.ReadingListBook, reading_list_table, properties={
-        '_ReadingListBook__user': relationship(model.User, backref='_User__')
+        '_ReadingListBook__user_id': reading_list_table.c.user_id,
+        '_ReadingListBook__book_id': reading_list_table.c.book_id
     })

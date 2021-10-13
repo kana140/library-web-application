@@ -391,12 +391,12 @@ class User:
 class ReadingListBook:
 
     def __init__(self, user: User, rlbook: Book):
-        self.__user_name = user.user_name
+        self.__user = user
         self.__book = rlbook
     
     @property
-    def user_name(self) -> User:
-        return self.__user_name
+    def user(self) -> User:
+        return self.__user
     
     @property
     def book(self) -> Book:
