@@ -323,7 +323,7 @@ class User:
             self.__password = password
 
         self.__read_books = []
-        self.__reviews = []
+        self.__reviews: List[Review] = list()
         self.__pages_read = 0
         self.__reading_list = []
 
@@ -391,12 +391,12 @@ class User:
 class ReadingListBook:
 
     def __init__(self, user: User, rlbook: Book):
-        self.__user = user
+        self.__user_name = user.user_name
         self.__book = rlbook
     
     @property
-    def user(self) -> User:
-        return self.__user
+    def user_name(self) -> User:
+        return self.__user_name
     
     @property
     def book(self) -> Book:

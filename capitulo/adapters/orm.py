@@ -1,7 +1,9 @@
 from sqlalchemy import (
-    Table, MetaData, Column, Integer, String, Date, DateTime, ForeignKey
+    Table, MetaData, Column, Integer, String, Date, DateTime,
+    ForeignKey
 )
-from sqlalchemy.orm import mapper, relationship, synonym
+from sqlalchemy.orm import mapper, relation, relationship, synonym
+
 from capitulo.domain import model
 
 # global variable giving access to the MetaData (schema) information of the database
@@ -12,8 +14,7 @@ users_table = Table(
     'users', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_name', String(255), unique=True, nullable=True),
-    Column('password', String(255), nullable=False),
-    #Column('reading_list_id', ForeignKey('reading_list.id'))
+    Column('password', String(255), nullable=False)
 )
 
 reviews_table = Table(
@@ -21,7 +22,7 @@ reviews_table = Table(
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', ForeignKey('users.id')),
     Column('book_id', ForeignKey('books.id')),
-    Column('review', String(1024), nullable=False),
+    Column('review_text', String(1024), nullable=False),
     Column('timestamp', DateTime, nullable=False)
 )
 
@@ -30,13 +31,12 @@ books_table = Table(
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('title', String(255), nullable=False),
     Column('description', String(1024), nullable=False),
-    #Column('authors', )
     Column('publisher', ForeignKey('publishers.id')),
+    Column('author', ForeignKey('authors.id')),
     Column('release_year', Integer, nullable=False),
     Column('num_pages', Integer, nullable=False),
     Column('image_hyperlink', String(255), nullable=False),
-    Column('language', String(255), nullable=False),
-
+    Column('language', String(255), nullable=False)
 )
 
 reading_list_table = Table(
@@ -56,8 +56,7 @@ authors_table = Table(
     'authors', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('author_id', Integer, nullable=False),
-    Column('author_full_name', String(255), nullable=False),
-    #Column('book_id',  ForeignKey('books.id'))
+    Column('author_full_name', String(255), nullable=False)
 )
 
 authored_books_table = Table(
@@ -80,18 +79,18 @@ def map_model_to_tables():
         '_User__user_name': users_table.c.user_name,
         '_User__password': users_table.c.password,
         '_User__reviews': relationship(model.Review, backref='_Review__user'),
-        #'_User__reading_list': relationship(model.Book, backref='_Book__user')
-        '_User__reading_list': relationship(model.Book, secondary=reading_list_table, back_populates='_Book__users')
+        '_Users__reading_list': relationship(model.ReadingListBook, backref='_ReadingListBook__user')
     })
     mapper(model.Review, reviews_table, properties={
-        '_Review__review': reviews_table.c.review,
-        '_Review__timestamp': reviews_table.c.timestamp
+        '_Review__review_text': reviews_table.c.review_text,
+        '_Review__timestamp': reviews_table.c.timestamp,
+        '_Review__user_id': reviews_table.c.user_id
     })
     mapper(model.Book, books_table, properties={
         '_Book__id': books_table.c.id,
         '_Book__title': books_table.c.title,
         '_Book__description': books_table.c.description,
-        #'_Book__publisher': books_table.c.publisher,
+        '_Book__publisher': books_table.c.publisher,
         '_Book__authors': relationship(model.Author, secondary=authored_books_table, back_populates='_Author__books'),
         '_Book__release_year': books_table.c.release_year,
         '_Book__num_pages': books_table.c.num_pages,
@@ -109,4 +108,7 @@ def map_model_to_tables():
         '_Author__author_id': authors_table.c.author_id,
         '_Author__author_full_name': authors_table.c.author_full_name,
         '_Author__books': relationship(model.Book, secondary=authored_books_table, back_populates='_Book__authors')
+    })
+    mapper(model.ReadingListBook, reading_list_table, properties={
+        '_ReadingListBook__user': relationship(model.User, backref='_User__')
     })

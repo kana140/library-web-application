@@ -12,7 +12,7 @@ TEST_DATA_PATH_DATABASE_FULL = get_project_root() / "capitulo" / "adapters" / "d
 TEST_DATA_PATH_DATABASE_LIMITED = get_project_root() / "tests" / "data"
 
 TEST_DATABASE_URI_IN_MEMORY = 'sqlite://'
-TEST_DATABASE_URI_FILE = 'sqlite:///capitulo-test.db'
+TEST_DATABASE_URI_FILE = 'sqlite:///capitulo-19-test.db'
 
 @pytest.fixture
 def database_engine():
