@@ -13,7 +13,7 @@ metadata = MetaData()
 users_table = Table(
     'users', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('user_name', String(255), unique=True, nullable=True),
+    Column('user_name', String(255), unique=True, nullable=False),
     Column('password', String(255), nullable=False)
 )
 
@@ -90,13 +90,14 @@ def map_model_to_tables():
     mapper(model.Publisher, publishers_table, properties={
         '_Publisher__id': publishers_table.c.id,
         '_Publisher__name': publishers_table.c.name,
-        '_Publisher__books': relationship(model.Book, back_populates='_Book__publisher')
+        '_Publisher__books': relationship(model.Book, backref='publisher')
     })
     mapper(model.Book, books_table, properties={
         '_Book__id': books_table.c.id,
         '_Book__title': books_table.c.title,
         '_Book__description': books_table.c.description,
-        '_Book__publisher': relationship(model.Publisher, back_populates='_Publisher__books'),
+        #'_Book__publisher': relationship(model.Publisher, back_populates='_Publisher__books'),
+        '_Book__publisher': books_table.c.publisher,
         '_Book__authors': relationship(model.Author, secondary=authored_books_table, back_populates='_Author__books'),
         '_Book__release_year': books_table.c.release_year,
         '_Book__num_pages': books_table.c.num_pages,
