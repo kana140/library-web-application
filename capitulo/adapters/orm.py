@@ -2,7 +2,7 @@ from sqlalchemy import (
     Table, MetaData, Column, Integer, String, Date, DateTime,
     ForeignKey
 )
-from sqlalchemy.orm import mapper, relation, relationship, synonym
+from sqlalchemy.orm import backref, mapper, relation, relationship, synonym
 
 from capitulo.domain import model
 
@@ -40,10 +40,10 @@ books_table = Table(
 )
 
 reading_list_table = Table(
-    'reading_list', metadata,
+    'reading_lists', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('user_id', ForeignKey('users.id')),
-    Column('book', ForeignKey('books.id'))
+    Column('book_id', ForeignKey('books.id')),
+    Column('user_id', ForeignKey('users.id'))
 )
 
 publishers_table = Table(
@@ -55,22 +55,22 @@ publishers_table = Table(
 authors_table = Table(
     'authors', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('author_id', Integer, nullable=False),
-    Column('author_full_name', String(255), nullable=False)
+    Column('unique_id', Integer, nullable=False),
+    Column('full_name', String(255), nullable=False)
 )
 
 authored_books_table = Table(
     'book_authors', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('author_id', ForeignKey('authors.id')),
-    Column('Book_id', ForeignKey('books.id'))
+    Column('book_id', ForeignKey('books.id'))
 )
 
 published_books_table = Table(
     'book_publishers', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('publisher_id', ForeignKey('publishers.id')),
-    Column('Book_id', ForeignKey('books.id'))
+    Column('book_id', ForeignKey('books.id'))
 )
 
 def map_model_to_tables():
@@ -79,7 +79,7 @@ def map_model_to_tables():
         '_User__user_name': users_table.c.user_name,
         '_User__password': users_table.c.password,
         '_User__reviews': relationship(model.Review, backref='_Review__user'),
-        '_Users__reading_list': relationship(model.ReadingListBook, backref='_ReadingListBook__user')
+        '_User__reading_list': relationship(model.Book, secondary=reading_list_table, back_populates='_Book__reading_list_users')
     })
     mapper(model.Review, reviews_table, properties={
         '_Review__review_text': reviews_table.c.review_text,
@@ -87,30 +87,26 @@ def map_model_to_tables():
         '_Review__user_id': reviews_table.c.user_id,
         '_Review__book_id': reviews_table.c.book_id
     })
+    mapper(model.Publisher, publishers_table, properties={
+        '_Publisher__id': publishers_table.c.id,
+        '_Publisher__name': publishers_table.c.name,
+        '_Publisher__books': relationship(model.Book, back_populates='_Book__publisher')
+    })
     mapper(model.Book, books_table, properties={
         '_Book__id': books_table.c.id,
         '_Book__title': books_table.c.title,
         '_Book__description': books_table.c.description,
-        '_Book__publisher': books_table.c.publisher,
+        '_Book__publisher': relationship(model.Publisher, back_populates='_Publisher__books'),
         '_Book__authors': relationship(model.Author, secondary=authored_books_table, back_populates='_Author__books'),
         '_Book__release_year': books_table.c.release_year,
         '_Book__num_pages': books_table.c.num_pages,
         '_Book__image_hyperlink': books_table.c.image_hyperlink,
         '_Book__language': books_table.c.language,
         '_Book__reviews': relationship(model.Review, backref='_Review__book'),
-        '_Book__users': relationship(model.User, secondary=reading_list_table, back_populates='_User__reading_list')
-    })
-    mapper(model.Publisher, publishers_table, properties={
-        '_Publisher__id': publishers_table.c.id,
-        '_Publisher__name': publishers_table.c.name,
-        '_Publisher__books': relationship(model.Book, backref='_Book__publisher')
+        '_Book__reading_list_users': relationship(model.User, secondary=reading_list_table, back_populates="_User__reading_list")
     })
     mapper(model.Author, authors_table, properties={
-        '_Author__author_id': authors_table.c.author_id,
-        '_Author__author_full_name': authors_table.c.author_full_name,
+        '_Author__unique_id': authors_table.c.unique_id,
+        '_Author__full_name': authors_table.c.full_name,
         '_Author__books': relationship(model.Book, secondary=authored_books_table, back_populates='_Book__authors')
-    })
-    mapper(model.ReadingListBook, reading_list_table, properties={
-        '_ReadingListBook__user_id': reading_list_table.c.user_id,
-        '_ReadingListBook__book_id': reading_list_table.c.book_id
     })

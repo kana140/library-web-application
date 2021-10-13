@@ -4,7 +4,7 @@ import pytest
 
 import capitulo.adapters.repository as repo
 from capitulo.adapters.database_repository import SqlAlchemyRepository
-from capitulo.domain.model import Publisher, Author, Book, Review, User, ReadingListBook, BooksInventory, make_review
+from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory, make_review
 from capitulo.adapters.repository import RepositoryException
 
 def test_repository_can_add_a_user(session_factory):

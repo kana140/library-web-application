@@ -8,7 +8,7 @@ from sqlalchemy import insert
 from sqlalchemy.orm import scoped_session
 from flask import _app_ctx_stack
 
-from capitulo.domain.model import User, Book, Review, Publisher, Author, ReadingListBook
+from capitulo.domain.model import User, Book, Review, Publisher, Author
 from capitulo.adapters.repository import AbstractRepository
 
 
@@ -236,21 +236,22 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get_reading_list(self, user) -> List[Book]:
         # Implement a method of narrowing down the books to only those that are linked to the specified user
-        reading_list = self._session_cm.session.query(ReadingListBook).filter(ReadingListBook.user.user_name.in_([user.user_name])).all()
-        return reading_list
+        # reading_list = self._session_cm.session.query(ReadingListBook).filter(ReadingListBook.user.user_name.in_([user.user_name])).all()
+        # return reading_list
+        pass
 
     def add_book_to_reading_list(self, book: Book, user: User):
-        super().add_book_to_reading_list(book, user)
-        with self._session_cm as scm:
-            scm.session.add(ReadingListBook(user, book))
-            scm.commit()
+        # super().add_book_to_reading_list(book, user)
+        # with self._session_cm as scm:
+        #     scm.session.add(ReadingListBook(user, book))
+        #     scm.commit()
         pass
 
     def remove_book_from_reading_list(self, book: Book, user):
-        super().remove_book_from_reading_list(book, user)
-        with self._session_cm as scm:
-            scm.session.delete(ReadingListBook(user, book))
-            scm.commit()
+        # super().remove_book_from_reading_list(book, user)
+        # with self._session_cm as scm:
+        #     scm.session.delete(ReadingListBook(user, book))
+        #     scm.commit()
         pass
 
     def get_book_ids_for_language(self, language: str):

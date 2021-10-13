@@ -27,7 +27,7 @@ def load_books(data_path: Path, repo: AbstractRepository, database_mode: bool):
     books_filename = str(data_path / "comic_books_excerpt.json")
     authors_filename = str(data_path / "book_authors_excerpt.json")
     our_reader = reader(books_filename, authors_filename)
-    our_reader.read_json_files
+    our_reader.read_json_files()
     for book in our_reader.dataset_of_books:
         repo.add_book(book)
 

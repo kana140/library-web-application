@@ -11,7 +11,7 @@ from bisect import bisect, bisect_left, insort_left
 from werkzeug.security import generate_password_hash
 
 from capitulo.adapters.repository import AbstractRepository, RepositoryException
-from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory, ReadingListBook, make_review
+from capitulo.domain.model import Publisher, Author, Book, Review, User, BooksInventory, make_review
 
 
 class MemoryRepository(AbstractRepository):
@@ -118,21 +118,13 @@ class MemoryRepository(AbstractRepository):
 
     def add_book_to_reading_list(self, book, user):
         # super().add_book_to_reading_list
-        count = len(user.reading_list)
-        for i in range(len(user.reading_list)):
-            if book == user.reading_list[i].book:
-                pass
-            else:
-                count -= 1
-        
-        if count == 0:
+        if book not in user.reading_list:
             user.add_to_reading_list(book)
 
     def remove_book_from_reading_list(self, book, user):
         # super().remove_book_from_reading_list
-        for i in range(len(user.reading_list)):
-            if book == user.reading_list[i].book:
-                user.remove_from_reading_list(book)
+        if book in user.reading_list:
+            user.remove_from_reading_list(book)
 
     def add_review(self, review: Review):
         super().add_review(review)

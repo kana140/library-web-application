@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Iterable
 
 
 class Publisher:
@@ -7,10 +7,15 @@ class Publisher:
     def __init__(self, publisher_name: str):
         # This makes sure the setter is called here in the initializer/constructor as well.
         self.name = publisher_name
+        self.__books: List[Book] = list()
 
     @property
     def name(self) -> str:
         return self.__name
+
+    @property
+    def books(self) -> Iterable['Book']:
+        return iter(self.__books)
 
     @name.setter
     def name(self, publisher_name: str):
@@ -20,6 +25,10 @@ class Publisher:
             publisher_name = publisher_name.strip()
             if publisher_name != "":
                 self.__name = publisher_name
+    
+    def add_book(self, book: 'Book'):
+        if isinstance(book, Book) and book not in self.__books:
+            self.__books.append(book)
 
     def __repr__(self):
         return f'<Publisher {self.name}>'
@@ -109,6 +118,7 @@ class Book:
 
         # use the attribute setter
         self.title = book_title
+        self.__reading_list_users: List[User] = list()
         self.__reviews = []
         self.__description = None
         self.__publisher = None
@@ -125,6 +135,13 @@ class Book:
     @property
     def book_id(self) -> int:
         return self.__book_id
+    
+    @property
+    def reading_list_users(self) -> Iterable['User']:
+        return iter(self.__reading_list_users)
+    
+    def add_reading_list_user(self, user: 'User'):
+        self.__reading_list_users.append(user)
 
     @property
     def title(self) -> str:
@@ -194,6 +211,7 @@ class Book:
     def publisher(self, publisher: Publisher):
         if isinstance(publisher, Publisher):
             self.__publisher = publisher
+            publisher.add_book(self)
         else:
             self.__publisher = None
 
@@ -322,10 +340,10 @@ class User:
         else:
             self.__password = password
 
-        self.__read_books = []
-        self.__reviews: List[Review] = list()
+        self.__read_books = list()
+        self.__reviews = list()
         self.__pages_read = 0
-        self.__reading_list = []
+        self.__reading_list: List[Book] = list()
 
     @property
     def user_name(self) -> str:
@@ -349,14 +367,11 @@ class User:
 
     def add_to_reading_list(self, book: Book):
         if isinstance(book, Book):
-            self.__reading_list.append(ReadingListBook(self, book))
+            self.__reading_list.append(book)
 
     def remove_from_reading_list(self, book: Book):
         if isinstance(book, Book):
-            for i in range(len(self.__reading_list)):
-                if self.__reading_list[i].book == book:
-                    self.__reading_list.pop(i)
-                    break
+            self.__reading_list.remove(book)
 
     @property
     def pages_read(self) -> int:
@@ -386,36 +401,6 @@ class User:
 
     def __hash__(self):
         return hash(self.user_name)
-
-
-class ReadingListBook:
-
-    def __init__(self, user: User, rlbook: Book):
-        self.__user = user
-        self.__book = rlbook
-    
-    @property
-    def user(self) -> User:
-        return self.__user
-    
-    @property
-    def book(self) -> Book:
-        return self.__book
-    
-    def __repr__(self):
-        return f'<Reading List Book {self.__book}>'
-    
-    def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            return False
-        return self.book.book_id == other.book.book_id
-
-    def __lt__(self, other):
-        return self.book.book_id < other.book.book_id
-
-    def __hash__(self):
-        return hash(self.book.book_id)
-
 class BooksInventory:
 
     def __init__(self):
