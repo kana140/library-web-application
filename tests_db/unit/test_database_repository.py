@@ -182,5 +182,66 @@ def test_repository_can_get_books_by_author(session_factory):
     repo.add_book(new_book)
 
     collection = repo.get_books_by_author(new_author)
-
     assert collection[0].authors[0].full_name == "Henry Harrison"
+
+
+def test_repository_can_get_books_by_language(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+    collection = repo.get_books_by_language("French")
+    assert collection[0].title == "Cruelle"
+
+
+def test_repository_can_get_books_by_publisher(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+    collection = repo.get_books_by_publisher("DC Comics")
+    assert collection[0].title == "Superman Archives, Vol. 2"
+
+
+def test_repository_can_get_books_by_title(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+    collection = repo.get_books_by_title("Superman Archives, Vol. 2")
+    assert collection[0].title == "Superman Archives, Vol. 2"
+
+
+def test_repository_can_get_books_by_release_year(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+    collection = repo.get_books_by_release_year(1997)
+    assert collection[0].title == "Superman Archives, Vol. 2"
+
+
+def test_repository_returns_book_ids_for_existing_author(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_ids = repo.get_book_ids_for_author('Florence Dupre la Tour')
+
+    assert book_ids == [2]
+
+
+def test_repository_returns_book_ids_for_existing_publisher(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_ids = repo.get_book_ids_for_publisher('DC Comics')
+    assert book_ids == [5]
+
+    book_ids = repo.get_book_ids_for_publisher('Avatar Press')
+    assert book_ids == [7, 8, 9, 10]
+
+
+def test_repository_returns_book_ids_for_existing_language(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_ids = repo.get_book_ids_for_language('English')
+    assert book_ids == [1, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 19, 20]
+
+
+def test_repository_returns_book_ids_for_release_year(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_ids = repo.get_book_ids_for_year('1997')
+    assert book_ids == [5]
+
+def test_repository_can_return_books_by_id(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    books = repo.get_books_by_id([7, 8, 9, 10])
+    assert books[0].title == "War Stories, Volume 3"

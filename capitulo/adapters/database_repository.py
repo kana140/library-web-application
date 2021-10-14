@@ -99,8 +99,13 @@ class SqlAlchemyRepository(AbstractRepository):
             return books
         else:
             # Return books matching author; return an empty list if there are no matches.
-            books = self._session_cm.session.query(Book).filter(author in Book._Book__authors).all()
-            return books
+            # books = self._session_cm.session.query(Book).filter(author in Book._Book__authors).all()
+            result = []
+            books = list(self._session_cm.session.query(Book).all())
+            for book in books:
+                if author in book.authors:
+                    result.append(book)
+            return result
 
     def get_books_by_language(self, language: str) -> List[Book]:
         if language is None:
@@ -108,8 +113,13 @@ class SqlAlchemyRepository(AbstractRepository):
             return books
         else:
             # Return books matching author; return an empty list if there are no matches.
-            books = self._session_cm.session.query(Book).filter(Book._Book__language == language).all()
-            return books
+            # books = self._session_cm.session.query(Book).filter(Book._Book__language == language).all()
+            result = []
+            books = list(self._session_cm.session.query(Book).all())
+            for book in books:
+                if book.language == language:
+                    result.append(book)
+            return result
 
     def get_books_by_publisher(self, publisher: str) -> List[Book]:
         if publisher is None:
@@ -117,8 +127,14 @@ class SqlAlchemyRepository(AbstractRepository):
             return books
         else:
             # Return books matching author; return an empty list if there are no matches.
-            books = self._session_cm.session.query(Book).filter(Book._Book__publisher == publisher).all()
-            return books
+            result = []
+            books = list(self._session_cm.session.query(Book).all())
+            for book in books:
+                if book.publisher.name == publisher:
+                    result.append(book)
+            return result
+            # books = self._session_cm.session.query(Book).filter(Book._Book__publisher == publisher).all()
+            # return books
 
     def get_books_by_title(self, title: str) -> List[Book]:
         if title is None:
@@ -138,41 +154,55 @@ class SqlAlchemyRepository(AbstractRepository):
             books = self._session_cm.session.query(Book).filter(Book._Book__release_year == release_year).all()
             return books
 
-    def get_book_ids_for_author(self, target_author: str):
+    def get_book_ids_for_author(self, full_name: str):
         book_ids = []
 
-        row = self._session_cm.session.execute('SELECT author_id FROM authors WHERE author_full_name = :target_author', {'author_full_name': target_author}).fetchone()
+        row = self._session_cm.session.execute('SELECT id FROM authors WHERE full_name = :full_name',
+                                               {'full_name': full_name}).fetchone()
 
         if row is None:
-            # No author with the name target_author - create an empty list
+            # No author with the name full_name - create an empty list
             book_ids = list()
         else:
             author_id = row[0]
-            # Retrieve book ids of books associated with the language
+            # Retrieve book ids of books associated with the author
             book_ids = self._session_cm.session.execute(
-                'SELECT book_id FROM book_authors WHERE author_full_name = :target_author ORDER BY book_id ASC',
+                'SELECT book_id FROM book_authors WHERE author_id = :author_id ORDER BY book_id ASC',
                 {'author_id': author_id}
             ).fetchall()
             book_ids = [id[0] for id in book_ids]
         return book_ids
 
-    def get_book_ids_for_publisher(self, target_publisher: str):
+    def get_book_ids_for_publisher(self, name: str):
         book_ids = []
+        book_ids = self._session_cm.session.execute('SELECT id FROM publishers WHERE name = :name',
+                                                    {'name': name}).fetchall()
+        if book_ids is None:
+            # No existing publisher - create an empty list
+            book_ids = list()
+        book_ids = [id[0] for id in book_ids]
+        return book_ids
 
-        row = self._session_cm.session.execute('SELECT id FROM publishers WHERE publisher_name = :target_publisher',
-                                               {'publisher_name': target_publisher}).fetchone()
-
+    def get_book_ids_for_language(self, language: str):
+        book_ids = []
+        row = self._session_cm.session.execute('SELECT id FROM books WHERE language = :language',
+                                               {'language': language}).fetchall()
         if row is None:
             # No author with the name target_author - create an empty list
             book_ids = list()
         else:
-            publisher_id = row[0]
-            # Retrieve book ids of books associated with the language
-            book_ids = self._session_cm.session.execute(
-                'SELECT book_id FROM book_authors WHERE publisher_name = :target_publisher ORDER BY book_id ASC',
-                {'publisher_id': publisher_id}
-            ).fetchall()
-            book_ids = [id[0] for id in book_ids]
+            book_ids = [id[0] for id in row]
+        return book_ids
+
+    def get_book_ids_for_year(self, year: int):
+        book_ids = []
+        row = self._session_cm.session.execute('SELECT id FROM books WHERE release_year = :year',
+                                               {'year': year}).fetchall()
+        if row is None:
+            # No author with the name target_author - create an empty list
+            book_ids = list()
+        else:
+            book_ids = [id[0] for id in row]
         return book_ids
 
     def get_number_of_books(self) -> int:
@@ -188,7 +218,7 @@ class SqlAlchemyRepository(AbstractRepository):
         return book
 
     def get_languages(self):
-        #query = self._session_cm.session.query(Book).filter(Book._Book__language)
+        # query = self._session_cm.session.query(Book).filter(Book._Book__language)
         row = self._session_cm.session.execute('SELECT language FROM books').fetchall()
         if row is None:
             languages = list()
@@ -211,7 +241,7 @@ class SqlAlchemyRepository(AbstractRepository):
         return publishers
 
     def get_release_years(self):
-        #query = self._session_cm.session.query(Book).filter(Book._Book__language)
+        # query = self._session_cm.session.query(Book).filter(Book._Book__language)
         row = self._session_cm.session.execute('SELECT release_year FROM books').fetchall()
         if row is None:
             languages = list()
@@ -254,28 +284,6 @@ class SqlAlchemyRepository(AbstractRepository):
         #     scm.commit()
         pass
 
-    def get_book_ids_for_language(self, language: str):
-        book_ids = []
-        row = self._session_cm.session.execute('SELECT id FROM books WHERE language = :language',
-                                               {'language': language}).fetchall()
-        if row is None:
-            # No author with the name target_author - create an empty list
-            book_ids = list()
-        else:
-            book_ids = [id[0] for id in row]
-        return book_ids
-
-    def get_book_ids_for_year(self, year: int):
-        book_ids = []
-        row = self._session_cm.session.execute('SELECT id FROM books WHERE release_year = :year',
-                                               {'year': year}).fetchall()
-        if row is None:
-            # No author with the name target_author - create an empty list
-            book_ids = list()
-        else:
-            book_ids = [id[0] for id in row]
-        return book_ids
-
     def get_book_ids_all(self):
         book_ids = []
 
@@ -284,8 +292,5 @@ class SqlAlchemyRepository(AbstractRepository):
         return book_ids
 
     def get_books_by_id(self, id_list):
-        books = self._session_cm.session.query(Book).filter(Book._Book__book_id.in_(id_list)).all()
+        books = self._session_cm.session.query(Book).filter(Book._Book__id.in_(id_list)).all()
         return books
-
-
-
