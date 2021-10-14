@@ -63,7 +63,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_user(self, user_name: str) -> User:
         user = None
         try:
-            user = self._session_cm.session.query(User).filter(User._User__user_name == user_name.lower()).one()
+            user = self._session_cm.session.query(User).filter(User._User__user_name == user_name).one()
         except NoResultFound:
             # Ignore any exception and return None.
             pass

@@ -17,6 +17,8 @@ def test_repository_can_add_a_user(session_factory):
 
     repo.add_user(User('Martin', '123456789'))
 
+    print(repo.get_number_of_users())
+
     user2 = repo.get_user('Dave')
 
     assert user2 == user and user2 is user
@@ -214,7 +216,7 @@ def test_repository_returns_book_ids_for_existing_author(session_factory):
 
     book_ids = repo.get_book_ids_for_author('Florence Dupre la Tour')
 
-    assert book_ids == [2]
+    assert book_ids == [30128855]
 
 
 def test_repository_returns_book_ids_for_existing_publisher(session_factory):

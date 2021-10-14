@@ -35,7 +35,7 @@ def load_books(data_path: Path, repo: AbstractRepository, database_mode: bool):
 def load_users(data_path: Path, repo: AbstractRepository):
     users = dict()
 
-    users_filename = str(Path(data_path) / "users.csv")
+    users_filename = str(data_path / "users.csv")
     for data_row in read_csv_file(users_filename):
         user = User(
             user_name=data_row[1],
@@ -54,5 +54,6 @@ def load_reviews(data_path: Path, repo: AbstractRepository, users):
             review_text=data_row[3],
             rating=int(data_row[4]),
             user=users[data_row[1]],
+            timestamp=datetime.strptime(data_row[5], '%Y-%m-%d %H:%M:%S')
         )
         repo.add_review(review)

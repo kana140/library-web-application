@@ -21,7 +21,7 @@ reviews_table = Table(
     'reviews', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', ForeignKey('users.id')),
-    Column('book_id', ForeignKey('books.id')),
+    Column('book_id', ForeignKey('books.book_id')),
     Column('review_text', String(1024), nullable=False),
     Column('rating', Integer, nullable=False),
     Column('timestamp', DateTime, nullable=False)
@@ -33,7 +33,7 @@ books_table = Table(
     Column('book_id', Integer, nullable=False),
     Column('title', String(255), nullable=False),
     Column('description', String(1024), nullable=True),
-    Column('publisher', ForeignKey('publishers.id')),
+    Column('publisher', ForeignKey('publishers.id'), nullable=True),
     Column('author', ForeignKey('authors.id')),
     Column('release_year', Integer, nullable=True),
     Column('num_pages', Integer, nullable=True),
@@ -65,14 +65,14 @@ authored_books_table = Table(
     'book_authors', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('author_id', ForeignKey('authors.id')),
-    Column('book_id', ForeignKey('books.id'))
+    Column('book_id', ForeignKey('books.book_id'))
 )
 
 published_books_table = Table(
     'book_publishers', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('publisher_id', ForeignKey('publishers.id')),
-    Column('book_id', ForeignKey('books.id'))
+    Column('book_id', ForeignKey('books.book_id'))
 )
 
 def map_model_to_tables():
@@ -93,14 +93,14 @@ def map_model_to_tables():
     mapper(model.Publisher, publishers_table, properties={
         '_Publisher__id': publishers_table.c.id,
         '_Publisher__name': publishers_table.c.name,
-        '_Publisher__books': relationship(model.Book, backref='publisher')
+        '_Publisher__books': relationship(model.Book)
     })
     mapper(model.Book, books_table, properties={
         '_Book__id': books_table.c.id,
         '_Book__book_id': books_table.c.book_id,
         '_Book__title': books_table.c.title,
         '_Book__description': books_table.c.description,
-        '_Book__publisher': books_table.c.publisher,
+        '_Book__publisher': relationship(model.Publisher),
         '_Book__authors': relationship(model.Author, secondary=authored_books_table, back_populates='_Author__books'),
         '_Book__release_year': books_table.c.release_year,
         '_Book__num_pages': books_table.c.num_pages,
