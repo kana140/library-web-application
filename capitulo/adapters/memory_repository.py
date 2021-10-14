@@ -112,13 +112,11 @@ class MemoryRepository(AbstractRepository):
     def get_reading_list(self, user) -> List[Book]:
         return user.reading_list
 
-    def add_book_to_reading_list(self, book, user):
-        # super().add_book_to_reading_list
+    def add_book_to_reading_list(self, book: Book, user: User):
         if book not in user.reading_list:
             user.add_to_reading_list(book)
 
-    def remove_book_from_reading_list(self, book, user):
-        # super().remove_book_from_reading_list
+    def remove_book_from_reading_list(self, book: Book, user: User):
         if book in user.reading_list:
             user.remove_from_reading_list(book)
 

@@ -1,6 +1,7 @@
 from datetime import date, datetime
 
 import pytest
+import sqlalchemy
 
 import capitulo.adapters.repository as repo
 from capitulo.adapters.database_repository import SqlAlchemyRepository
@@ -142,21 +143,20 @@ def test_repository_can_get_last_book(session_factory):
 def test_repository_can_get_books_by_ids(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    books = repo.get_books_by_id([18955715, 17405342, 30735315])
+    books = repo.get_books_by_id([1, 2, 3])
 
     assert len(books) == 3
-    assert books[0].title == 'She Wolf #1'
-    assert books[1].title == "Seiyuu-ka! 12"
-    assert books[2].title == 'D.Gray-man, Vol. 16: Blood & Chains'
+    assert books[0].title == 'The Switchblade Mamma'
+    assert books[1].title == "Cruelle"
+    assert books[2].title == 'Captain America: Winter Soldier (The Ultimate Graphic Novels Collection: Publication Order, #7)'
 
 def test_repository_does_not_retrieve_book_for_non_existent_id(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    books = repo.get_books_by_id([345, 665745542, 17405342])
+    books = repo.get_books_by_id([4, 665745542, 17405342])
 
     assert len(books) == 1
-    assert books[
-               0].title == "Seiyuu-ka! 12"
+    assert books[0].title == "Bounty Hunter 4/3: My Life in Combat from Marine Scout Sniper to MARSOC"
 
 def test_repository_returns_an_empty_list_for_non_existent_ids(session_factory):
     repo = SqlAlchemyRepository(session_factory)
@@ -245,3 +245,83 @@ def test_repository_can_return_books_by_id(session_factory):
 
     books = repo.get_books_by_id([7, 8, 9, 10])
     assert books[0].title == "War Stories, Volume 3"
+
+def test_repository_can_get_reading_list(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    reading_list = repo.get_reading_list("thorke")
+    assert reading_list == []
+
+def test_repository_can_add_to_reading_list(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_to_add = Book(240, "Happy as Larry")
+    new_user = User("Jimmy Johnson", "2348fdsf")
+    repo.add_user(new_user)
+    repo.add_book(book_to_add)
+    repo.add_book_to_reading_list(book_to_add, new_user)
+    our_list = repo.get_reading_list(new_user.user_name)
+    assert our_list[0] == book_to_add
+
+def test_repository_can_add_review(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_to_add = Book(240, "Happy as Larry")
+    user_to_add = User("Borke, Thorkes Brother", "235546H^")
+    review_to_add = Review(book_to_add, "THAT WAS SO GOOD MY SOCKS HAVE BEEN BLOWN OFF", 5, user_to_add)
+    repo.add_book(book_to_add)
+    repo.add_user(user_to_add)
+    same_user = repo.get_user(user_to_add.user_name)
+    same_book = repo.get_book(book_to_add.book_id)
+    repo.add_book_to_reading_list(same_book, same_user)
+    repo.add_review(review_to_add)
+    get_our_user = repo.get_user(same_user.user_name)
+
+    assert get_our_user.reviews[0] == review_to_add
+    assert book_to_add == same_book
+    assert user_to_add == same_user
+
+def test_repository_can_remove_from_reading_list(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_to_add = Book(240, "Happy as Larry")
+    user_to_add = User("Borke, Thorkes Brother", "235546H^")
+    review_to_add = Review(book_to_add, "THAT WAS SO GOOD MY SOCKS HAVE BEEN BLOWN OFF", 5, user_to_add)
+    repo.add_book(book_to_add)
+    repo.add_user(user_to_add)
+    same_user = repo.get_user(user_to_add.user_name)
+    same_book = repo.get_book(book_to_add.book_id)
+    repo.add_book_to_reading_list(same_book, same_user)
+    repo.add_review(review_to_add)
+    grab_user_back = repo.get_user(same_user.user_name)
+    assert grab_user_back.reading_list[0].title == "Happy as Larry"
+    
+    repo.remove_book_from_reading_list(same_book, same_user)
+    get_our_user = repo.get_user(same_user.user_name)
+
+    assert get_our_user.reading_list == []
+
+def test_repository_can_get_all_book_ids(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    book_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+    test_book_ids = repo.get_book_ids_all()
+
+    assert book_ids == test_book_ids
+
+def test_repository_can_get_books_by_id(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    results = repo.get_books_by_id([1, 2, 3])
+
+    assert results[0].title == "The Switchblade Mamma"
+
+def test_repository_can_get_all_books(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    results = repo.get_all_books()
+
+    assert results[0].title == "The Switchblade Mamma"
+
+    

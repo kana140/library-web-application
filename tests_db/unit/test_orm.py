@@ -6,7 +6,6 @@ from sqlalchemy.exc import IntegrityError
 
 from capitulo.domain.model import User, Book, Review, make_review
 
-article_date = datetime.date(2020, 2, 28)
 not_ebook = False
 code_language = "eng"
 image = None

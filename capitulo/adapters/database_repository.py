@@ -3,14 +3,14 @@ from typing import List
 
 from sqlalchemy import desc, asc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, delete
 
 from sqlalchemy.orm import scoped_session
 from flask import _app_ctx_stack
 
 from capitulo.domain.model import User, Book, Review, Publisher, Author
 from capitulo.adapters.repository import AbstractRepository
-
+from capitulo.adapters.orm import reading_list_table
 
 class SessionContextManager:
     def __init__(self, session_factory):
@@ -264,30 +264,28 @@ class SqlAlchemyRepository(AbstractRepository):
         number_of_reviews = self._session_cm.session.query(Review).count()
         return number_of_reviews
 
-    def get_reading_list(self, user) -> List[Book]:
+    def get_reading_list(self, user_name: str) -> List[Book]:
         # Implement a method of narrowing down the books to only those that are linked to the specified user
-        # reading_list = self._session_cm.session.query(ReadingListBook).filter(ReadingListBook.user.user_name.in_([user.user_name])).all()
-        # return reading_list
-        pass
+        current_user = self._session_cm.session.query(User).filter(User._User__user_name == user_name).first()
+        reading_list = current_user.reading_list
+        return reading_list
 
     def add_book_to_reading_list(self, book: Book, user: User):
-        # super().add_book_to_reading_list(book, user)
-        # with self._session_cm as scm:
-        #     scm.session.add(ReadingListBook(user, book))
-        #     scm.commit()
-        pass
+        stmt = insert(reading_list_table).values(title = book.title, user_name = user.user_name)
+        with self._session_cm as scm:
+            scm.session.execute(stmt)
+            scm.commit()
 
     def remove_book_from_reading_list(self, book: Book, user):
-        # super().remove_book_from_reading_list(book, user)
-        # with self._session_cm as scm:
-        #     scm.session.delete(ReadingListBook(user, book))
-        #     scm.commit()
-        pass
+        stmt = delete(reading_list_table).where(reading_list_table.c.title == book.title, reading_list_table.c.user_name == user.user_name)
+        with self._session_cm as scm:
+            scm.session.execute(stmt)
+            scm.commit()
 
     def get_book_ids_all(self):
         book_ids = []
 
-        row = self._session_cm.sesion.execute('SELECT id FROM books').fetchall()
+        row = self._session_cm.session.execute('SELECT id FROM books').fetchall()
         book_ids = [val[0] for val in row]
         return book_ids
 

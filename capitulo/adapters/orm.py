@@ -43,8 +43,8 @@ books_table = Table(
 reading_list_table = Table(
     'reading_lists', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('book_id', ForeignKey('books.id')),
-    Column('user_id', ForeignKey('users.id'))
+    Column('title', ForeignKey('books.title')),
+    Column('user_name', ForeignKey('users.user_name'))
 )
 
 publishers_table = Table(
