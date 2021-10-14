@@ -24,11 +24,12 @@ def read_csv_file(filename: str):
 
 
 def load_books(data_path: Path, repo: AbstractRepository, database_mode: bool):
-    books_filename = str(data_path / "comic_books_excerpt.json")
-    authors_filename = str(data_path / "book_authors_excerpt.json")
-    our_reader = reader(books_filename, authors_filename)
+    books_file_path = data_path / 'comic_books_excerpt.json'
+    authors_file_path = data_path / 'book_authors_excerpt.json'
+    our_reader = reader(books_file_path, authors_file_path)
     our_reader.read_json_files()
-    for book in our_reader.dataset_of_books:
+    books_to_load = our_reader.dataset_of_books
+    for book in books_to_load:
         repo.add_book(book)
 
 def load_users(data_path: Path, repo: AbstractRepository):
@@ -46,7 +47,7 @@ def load_users(data_path: Path, repo: AbstractRepository):
 
 
 def load_reviews(data_path: Path, repo: AbstractRepository, users):
-    reviews_filename = str(Path(data_path) / "reviews.csv")
+    reviews_filename = str(data_path / "reviews.csv")
     for data_row in read_csv_file(reviews_filename):
         review = make_review(
             book=repo.get_book(int(data_row[2])),

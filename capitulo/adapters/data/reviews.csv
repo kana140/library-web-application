@@ -1,5 +1,7 @@
 id,user-id,book-id,review-text,rating,timestamp
 1,1,23272155,"Terrible, just terrible.",5,2020-02-28 14:31:26
-1,1,707611,"Best book ever, the best",5,2020-02-28 14:31:26
-1,1,707611,"Wow! This book was incredible. Super awe-inspiring",5,2020-02-28 14:31:26
-1,1,707611,"one of the best books ever, brings me back to the time i was a child and no one would talk to me not even my mum or dad good times",5,2020-02-28 14:31:26
+2,1,707611,"Best book ever, the best",5,2020-02-28 14:31:26
+3,1,707611,"Wow! This book was incredible. Super awe-inspiring",5,2020-02-28 14:31:26
+4,1,707611,"one of the best books ever, brings me back to the time i was a child and no one would talk to me not even my mum or dad good times",5,2020-02-28 14:31:26
+5,2,23272155,"AN ABSOLUTE ROMP",5,2020-02-28 14:32:27
+6,3,23272155,"This was the greatest thing Ive read since that time I fell over on the pavement and read what someone had written in the concrete when it when it was drying, you know how people do that? They wrote - nice dry -, like - nice try -, but it was in drying concrete! Isnt that just hilarious?!?! But yes this is the second best.",5,2020-02-28 14:32:29

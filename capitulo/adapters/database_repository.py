@@ -3,7 +3,7 @@ from typing import List
 
 from sqlalchemy import desc, asc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
 from sqlalchemy.orm import scoped_session
 from flask import _app_ctx_stack
@@ -63,7 +63,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_user(self, user_name: str) -> User:
         user = None
         try:
-            user = self._session_cm.session.query(User).filter(User._User__user_name == user_name).one()
+            user = self._session_cm.session.query(User).filter(User._User__user_name == user_name.lower()).one()
         except NoResultFound:
             # Ignore any exception and return None.
             pass
@@ -82,7 +82,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_book(self, id: int) -> Book:
         book = None
         try:
-            book = self._session_cm.session.query(Book).filter(Book._Book__id == id).one()
+            book = self._session_cm.session.query(Book).filter(Book._Book__book_id == id).one()
         except NoResultFound:
             # Ignore any exception and return None
             pass
@@ -93,7 +93,7 @@ class SqlAlchemyRepository(AbstractRepository):
         books = self._session_cm.session.query(Book).all()
         return books
 
-    def get_books_by_author(self, author: str) -> List[Book]:
+    def get_books_by_author(self, author: Author) -> List[Book]:
         if author is None:
             books = self._session_cm.session.query(Book).all()
             return books
@@ -184,7 +184,7 @@ class SqlAlchemyRepository(AbstractRepository):
         return book
 
     def get_last_book(self) -> Book:
-        book = self._session_cm.session.query(Book).order_by(Book.book_id.desc()).first()
+        book = self._session_cm.session.query(Book).order_by(Book._Book__id.desc()).first()
         return book
 
     def get_languages(self):
@@ -284,7 +284,7 @@ class SqlAlchemyRepository(AbstractRepository):
         return book_ids
 
     def get_books_by_id(self, id_list):
-        books = self._session_cm.session.query(Book).filter(Book._Book__id.in_(id_list)).all()
+        books = self._session_cm.session.query(Book).filter(Book._Book__book_id.in_(id_list)).all()
         return books
 
 

@@ -29,14 +29,15 @@ reviews_table = Table(
 books_table = Table(
     'books', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('book_id', Integer, nullable=False),
     Column('title', String(255), nullable=False),
-    Column('description', String(1024), nullable=False),
+    Column('description', String(1024), nullable=True),
     Column('publisher', ForeignKey('publishers.id')),
     Column('author', ForeignKey('authors.id')),
-    Column('release_year', Integer, nullable=False),
-    Column('num_pages', Integer, nullable=False),
-    Column('image_hyperlink', String(255), nullable=False),
-    Column('language', String(255), nullable=False)
+    Column('release_year', Integer, nullable=True),
+    Column('num_pages', Integer, nullable=True),
+    Column('image_hyperlink', String(255), nullable=True),
+    Column('language', String(255), nullable=True)
 )
 
 reading_list_table = Table(
@@ -49,14 +50,14 @@ reading_list_table = Table(
 publishers_table = Table(
     'publishers', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String(255), nullable=False)
+    Column('name', String(255), nullable=True)
 )
 
 authors_table = Table(
     'authors', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('unique_id', Integer, nullable=False),
-    Column('full_name', String(255), nullable=False)
+    Column('full_name', String(255), nullable=True)
 )
 
 authored_books_table = Table(
@@ -94,9 +95,9 @@ def map_model_to_tables():
     })
     mapper(model.Book, books_table, properties={
         '_Book__id': books_table.c.id,
+        '_Book__book_id': books_table.c.book_id,
         '_Book__title': books_table.c.title,
         '_Book__description': books_table.c.description,
-        #'_Book__publisher': relationship(model.Publisher, back_populates='_Publisher__books'),
         '_Book__publisher': books_table.c.publisher,
         '_Book__authors': relationship(model.Author, secondary=authored_books_table, back_populates='_Author__books'),
         '_Book__release_year': books_table.c.release_year,

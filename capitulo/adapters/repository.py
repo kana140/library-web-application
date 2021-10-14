@@ -167,3 +167,15 @@ class AbstractRepository(abc.ABC):
     def get_books_by_id(self, id_list):
         """ Returns all books by ids """
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_publishers(self):
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_authors(self):
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_languages(self):
+        raise NotImplementedError

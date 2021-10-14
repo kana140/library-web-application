@@ -55,11 +55,7 @@ class MemoryRepository(AbstractRepository):
                     self.__release_years.append(book.release_year)
 
     def get_book(self, id: int) -> Book:
-        book = None
-        try:
-            book = self.__books_index[id]
-        except KeyError:
-            pass
+        book = self.__books_index.get(id)
         return book
 
     def get_books_by_author(self, author: str) -> List[Book]:
