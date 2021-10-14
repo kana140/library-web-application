@@ -6,11 +6,6 @@ from sqlalchemy.exc import IntegrityError
 
 from capitulo.domain.model import User, Book, Review, make_review
 
-not_ebook = False
-code_language = "eng"
-image = None
-pages = 100
-
 
 def insert_user(empty_session, values=None):
     new_name = "Andrew"
@@ -38,11 +33,8 @@ def insert_users(empty_session, values):
 
 def insert_book(empty_session):
     empty_session.execute(
-        'INSERT INTO books (id, title, publisher, release_year, is_ebook, language_code, description, '
-        'image_hyperlink, num_pages) VALUES '
-        '(39338, "book 1", "DC Comics", :release_year, :is_ebook, :language_code, "cooo", :image, :num_pages)',
-        {'release_year': 1997, 'is_ebook': not_ebook, 'language_code': code_language, 'image_hyperlink': image,
-         'num_pages': pages}
+        'INSERT INTO books (book_id, title, description, publisher, author, release_year, num_pages, image_hyperlink, language) VALUES (39338, "book 1", :description, "DC Comics", "an_author", :release_year, :num_pages, :image_hyperlink, :language)',
+        {'description': None, 'release_year': None, 'language': None, 'image_hyperlink': None, 'num_pages': None}
     )
     row = empty_session.execute('SELECT id from books').fetchone()
     return row[0]
@@ -54,21 +46,22 @@ def insert_reviewed_book(empty_session):
 
     timestamp_1 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     timestamp_2 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    rating = 4
 
     empty_session.execute(
-        'INSERT INTO comments (user_id, article_id, comment, timestamp) VALUES '
-        '(:user_id, :article_id, "Comment 1", :timestamp_1),'
-        '(:user_id, :article_id, "Comment 2", :timestamp_2)',
-        {'user_id': user_key, 'article_id': article_key, 'timestamp_1': timestamp_1, 'timestamp_2': timestamp_2}
+        'INSERT INTO reviews (user_id, book_id, review_text, rating, timestamp) VALUES '
+        '(:user_id, :book_id, "Review 1", :rating, :timestamp_1),'
+        '(:user_id, :book_id, "Review 2", :rating, :timestamp_2)',
+        {'user_id': user_key, 'book_id': article_key, 'rating': rating, 'timestamp_1': timestamp_1, 'timestamp_2': timestamp_2}
     )
 
-    row = empty_session.execute('SELECT id from articles').fetchone()
+    row = empty_session.execute('SELECT id from books').fetchone()
     return row[0]
 
 
 def make_book():
     book = Book(
-        4622,
+        39338,
         "book 1"
     )
     return book
@@ -120,113 +113,97 @@ def test_loading_of_book(empty_session):
     assert book_key == fetched_book.id
 
 
-def test_loading_of_tagged_article(empty_session):
-    article_key = insert_article(empty_session)
-    tag_keys = insert_tags(empty_session)
-    insert_article_tag_associations(empty_session, article_key, tag_keys)
+def test_loading_of_reviewed_book(empty_session):
+    insert_reviewed_book(empty_session)
 
-    article = empty_session.query(Article).get(article_key)
-    tags = [empty_session.query(Tag).get(key) for key in tag_keys]
+    rows = empty_session.query(Book).all()
+    book = rows[0]
 
-    for tag in tags:
-        assert article.is_tagged_by(tag)
-        assert tag.is_applied_to(article)
+    for review in book.reviews:
+        assert review.book is book
 
 
-def test_loading_of_commented_article(empty_session):
-    insert_commented_article(empty_session)
-
-    rows = empty_session.query(Article).all()
-    article = rows[0]
-
-    for comment in article.comments:
-        assert comment.article is article
-
-
-def test_saving_of_comment(empty_session):
-    article_key = insert_article(empty_session)
+def test_saving_of_reviews(empty_session):
+    book_key = insert_book(empty_session)
     user_key = insert_user(empty_session, ("Andrew", "1234"))
 
-    rows = empty_session.query(Article).all()
-    article = rows[0]
+    rows = empty_session.query(Book).all()
+    book = rows[0]
     user = empty_session.query(User).filter(User._User__user_name == "Andrew").one()
 
-    # Create a new Comment that is bidirectionally linked with the User and Article.
-    comment_text = "Some comment text."
-    comment = make_comment(comment_text, user, article)
+    # Create a new Comment that is bidirectionally linked with the User and Book.
+    review_text = "Some review text."
+    rating = 4
+    review = make_review(book, review_text, rating, user)
 
     # Note: if the bidirectional links between the new Comment and the User and
     # Article objects hadn't been established in memory, they would exist following
     # committing the addition of the Comment to the database.
-    empty_session.add(comment)
+    empty_session.add(review)
     empty_session.commit()
 
-    rows = list(empty_session.execute('SELECT user_id, article_id, comment FROM comments'))
+    rows = list(empty_session.execute('SELECT user_id, book_id, review_text, rating FROM reviews'))
 
-    assert rows == [(user_key, article_key, comment_text)]
+    assert rows == [(user_key, book_key, review_text, rating)]
 
 
-def test_saving_of_article(empty_session):
-    article = make_article()
-    empty_session.add(article)
+def test_saving_of_book(empty_session):
+    book = make_book()
+    empty_session.add(book)
     empty_session.commit()
 
-    rows = list(empty_session.execute('SELECT date, title, first_paragraph, hyperlink, image_hyperlink FROM articles'))
-    date = article_date.isoformat()
-    assert rows == [(date,
-                     "Coronavirus: First case of virus in New Zealand",
-                     "The first case of coronavirus has been confirmed in New Zealand  and authorities are now scrambling to track down people who may have come into contact with the patient.",
-                     "https://www.stuff.co.nz/national/health/119899280/ministry-of-health-gives-latest-update-on-novel-coronavirus",
-                     "https://resources.stuff.co.nz/content/dam/images/1/z/e/3/w/n/image.related.StuffLandscapeSixteenByNine.1240x700.1zduvk.png/1583369866749.jpg"
-                     )]
+    rows = list(empty_session.execute('SELECT book_id, title, description, image_hyperlink FROM books'))
+    assert rows == [(39338, "book 1", None, None,)]
 
 
-def test_saving_tagged_article(empty_session):
-    article = make_article()
-    tag = make_tag()
+def test_saving_reading_list(empty_session):
+    book = make_book()
+    user = make_user()
 
-    # Establish the bidirectional relationship between the Article and the Tag.
-    make_tag_association(article, tag)
+    # Establish the bidirectional relationship between the Book and the User.
+    #make_tag_association(article, tag)
+    user.add_to_reading_list(book)
 
     # Persist the Article (and Tag).
     # Note: it doesn't matter whether we add the Tag or the Article. They are connected
     # bidirectionally, so persisting either one will persist the other.
-    empty_session.add(article)
+    empty_session.add(book)
     empty_session.commit()
 
     # Test test_saving_of_article() checks for insertion into the articles table.
-    rows = list(empty_session.execute('SELECT id FROM articles'))
-    article_key = rows[0][0]
+    rows = list(empty_session.execute('SELECT title FROM books'))
+    book_key = rows[0][0]
 
     # Check that the tags table has a new record.
-    rows = list(empty_session.execute('SELECT id, tag_name FROM tags'))
-    tag_key = rows[0][0]
-    assert rows[0][1] == "News"
+    rows = list(empty_session.execute('SELECT id, user_name FROM users'))
+    user_name = rows[0][1]
+    assert rows[0][1] == "Andrew"
 
-    # Check that the article_tags table has a new record.
-    rows = list(empty_session.execute('SELECT article_id, tag_id from article_tags'))
-    article_foreign_key = rows[0][0]
-    tag_foreign_key = rows[0][1]
+    # Check that the reading_list_table table has a new record.
+    rows = list(empty_session.execute('SELECT title, user_name from reading_lists'))
+    book_foreign_key = rows[0][0]
+    user_foreign_key = rows[0][1]
 
-    assert article_key == article_foreign_key
-    assert tag_key == tag_foreign_key
+    assert book_key == book_foreign_key
+    assert user_name == user_foreign_key
 
 
-def test_save_commented_article(empty_session):
-    # Create Article User objects.
-    article = make_article()
+def test_save_reviewed_book(empty_session):
+    # Create Book User objects.
+    book = make_book()
     user = make_user()
 
-    # Create a new Comment that is bidirectionally linked with the User and Article.
-    comment_text = "Some comment text."
-    comment = make_comment(comment_text, user, article)
+    # Create a new Review that is bidirectionally linked with the User and Book.
+    review_text = "Some review text."
+    rating = 4
+    review = make_review(book, review_text, rating, user)
 
-    # Save the new Article.
-    empty_session.add(article)
+    # Save the new Book.
+    empty_session.add(book)
     empty_session.commit()
 
-    # Test test_saving_of_article() checks for insertion into the articles table.
-    rows = list(empty_session.execute('SELECT id FROM articles'))
+    # Test test_saving_of_book() checks for insertion into the books table.
+    rows = list(empty_session.execute('SELECT id FROM books'))
     article_key = rows[0][0]
 
     # Test test_saving_of_users() checks for insertion into the users table.
@@ -235,5 +212,5 @@ def test_save_commented_article(empty_session):
 
     # Check that the comments table has a new record that links to the articles and users
     # tables.
-    rows = list(empty_session.execute('SELECT user_id, article_id, comment FROM comments'))
-    assert rows == [(user_key, article_key, comment_text)]
+    rows = list(empty_session.execute('SELECT user_id, book_id, review_text, rating FROM reviews'))
+    assert rows == [(user_key, article_key, review_text, rating)]

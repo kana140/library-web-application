@@ -340,8 +340,8 @@ class User:
         if user_name == "" or not isinstance(user_name, str):
             self.__user_name = None
         else:
-            self.__user_name = user_name.strip().lower()
-
+            #self.__user_name = user_name.strip().lower()
+            self.__user_name = user_name.strip()
         if password == "" or not isinstance(password, str) or len(password) < 7:
             self.__password = None
         else:

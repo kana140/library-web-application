@@ -23,6 +23,7 @@ reviews_table = Table(
     Column('user_id', ForeignKey('users.id')),
     Column('book_id', ForeignKey('books.id')),
     Column('review_text', String(1024), nullable=False),
+    Column('rating', Integer, nullable=False),
     Column('timestamp', DateTime, nullable=False)
 )
 
@@ -84,6 +85,7 @@ def map_model_to_tables():
     })
     mapper(model.Review, reviews_table, properties={
         '_Review__review_text': reviews_table.c.review_text,
+        '_Review__rating': reviews_table.c.rating,
         '_Review__timestamp': reviews_table.c.timestamp,
         '_Review__user_id': reviews_table.c.user_id,
         '_Review__book_id': reviews_table.c.book_id
