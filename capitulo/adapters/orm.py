@@ -50,7 +50,7 @@ reading_list_table = Table(
 
 publishers_table = Table(
     'publishers', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('id', Integer, primary_key=True, autoincrement=True, unique=True),
     Column('name', String(255), nullable=True)
 )
 
@@ -102,7 +102,7 @@ def map_model_to_tables():
         '_Book__title': books_table.c.title,
         '_Book__description': books_table.c.description,
         #'_Book__publisher': relationship(model.Publisher, back_populates='books'),
-        #'_Book__publisher': books_table.c.publisher,
+        '_Book__publisher': books_table.c.publisher,
         '_Book__authors': relationship(model.Author, secondary=authored_books_table, back_populates='_Author__books'),
         '_Book__release_year': books_table.c.release_year,
         '_Book__num_pages': books_table.c.num_pages,
