@@ -34,10 +34,17 @@ class BooksJSONReader:
     def read_json_files(self):
         authors_json = self.read_authors_file()
         books_json = self.read_books_file()
+        publisher_dict = dict()
+        author_dict = dict()
 
         for book_json in books_json:
             book_instance = Book(int(book_json['book_id']), book_json['title'])
-            book_instance.publisher = Publisher(book_json['publisher'])
+            if publisher_dict.get(book_json['publisher']) == None and book_json['publisher'] != "":
+                publisher_dict[book_json['publisher']] = Publisher(book_json['publisher'])
+            if book_json['publisher'] == "":
+                book_instance.publisher = None
+            else:
+                book_instance.publisher = publisher_dict.get(book_json['publisher'])
             if book_json['publication_year'] != "":
                 book_instance.release_year = int(book_json['publication_year'])
             if book_json['is_ebook'].lower() == 'false':
@@ -62,6 +69,8 @@ class BooksJSONReader:
                 for author_json in authors_json:
                     if int(author_json['author_id']) == numerical_id:
                         author_name = author_json['name']
-                book_instance.add_author(Author(numerical_id, author_name))
+                if author_dict.get(numerical_id) == None:
+                    author_dict[numerical_id] = Author(numerical_id, author_name)
+                book_instance.add_author(author_dict.get(numerical_id))
 
             self.__dataset_of_books.append(book_instance)

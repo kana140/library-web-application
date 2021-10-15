@@ -33,7 +33,7 @@ books_table = Table(
     Column('book_id', Integer, nullable=False),
     Column('title', String(255), nullable=False),
     Column('description', String(1024), nullable=True),
-    Column('publisher', ForeignKey('publishers.id'), nullable=True),
+    Column('publisher', ForeignKey('publishers.name'), nullable=True),
     Column('author', ForeignKey('authors.id')),
     Column('release_year', Integer, nullable=True),
     Column('num_pages', Integer, nullable=True),

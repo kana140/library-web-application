@@ -77,6 +77,10 @@ class SqlAlchemyRepository(AbstractRepository):
     def add_book(self, book: Book):
         with self._session_cm as scm:
             scm.session.add(book)
+            if book.publisher != None:
+                scm.session.add(book.publisher)
+            for author in book.authors:
+                scm.session.add(author)
             scm.commit()
 
     def get_book(self, id: int) -> Book:
