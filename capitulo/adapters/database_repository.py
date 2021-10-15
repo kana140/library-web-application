@@ -200,7 +200,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get_book_ids_for_year(self, year: int):
         book_ids = []
-        row = self._session_cm.session.execute('SELECT id FROM books WHERE release_year = :year',
+        row = self._session_cm.session.execute('SELECT book_id FROM books WHERE release_year = :year',
                                                {'year': year}).fetchall()
         if row is None:
             # No author with the name target_author - create an empty list
@@ -229,7 +229,9 @@ class SqlAlchemyRepository(AbstractRepository):
         else:
             languages = self._session_cm.session.execute(
                 'SELECT language FROM books ORDER BY language ASC').fetchall()
-        return languages
+            languages = [item[0] for item in languages]
+            languages = list(dict.fromkeys(languages))
+        return sorted(languages)
 
     def add_language(self, language: str):
         with self._session_cm as scm:
@@ -238,21 +240,29 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get_authors(self):
         authors = self._session_cm.session.query(Author).all()
-        return authors
+        return sorted(authors)
 
     def get_publishers(self):
         publishers = self._session_cm.session.query(Publisher).all()
-        return publishers
+        result = []
+        for publisher in publishers:
+            result.append(publisher.name)
+        return sorted(result)
 
     def get_release_years(self):
         # query = self._session_cm.session.query(Book).filter(Book._Book__language)
-        row = self._session_cm.session.execute('SELECT release_year FROM books').fetchall()
-        if row is None:
-            languages = list()
-        else:
-            languages = self._session_cm.session.execute(
-                'SELECT release_year FROM books ORDER BY release_year ASC').fetchall()
-        return languages
+        #row = self._session_cm.session.execute('SELECT release_year FROM books').fetchall()
+        #if row is None:
+        #    release_year = list()
+        #else:
+        #    release_year = self._session_cm.session.execute(
+        #        'SELECT release_year FROM books ORDER BY release_year ASC').fetchall()
+        release_years = self._session_cm.session.execute(
+            'SELECT release_year FROM books WHERE release_year IS NOT NULL ORDER BY release_year ASC'
+        )
+        release_years = [item[0] for item in release_years]
+        release_years = list(dict.fromkeys(release_years))
+        return release_years
 
     def get_reviews(self) -> List[Review]:
         reviews = self._session_cm.session.query(Review).all()
@@ -294,5 +304,5 @@ class SqlAlchemyRepository(AbstractRepository):
         return book_ids
 
     def get_books_by_id(self, id_list):
-        books = self._session_cm.session.query(Book).filter(Book._Book__id.in_(id_list)).all()
+        books = self._session_cm.session.query(Book).filter(Book._Book__book_id.in_(id_list)).all()
         return books

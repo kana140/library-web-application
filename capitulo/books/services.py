@@ -91,11 +91,12 @@ def book_to_dict(book: Book):
         'title': book.title,
         'reviews': reviews_to_dict(book.reviews),
         'description': book.description,
-        'publisher': book.publisher.name,
+        #'publisher': book.publisher.name,
+        'publisher': book.publisher,
         'authors': authors_to_dict(book.authors),
         'release_year': book.release_year,
         'image_hyperlink': book.image_hyperlink,
-        'ebook': book.ebook,
+        #'ebook': book.ebook,
         'num_pages': book.num_pages,
     }
     return book_dict

@@ -88,7 +88,8 @@ def books_by_author():
     else:
         page = int(page)
 
-    book_ids = services.get_book_ids_for_author(int(author_id), repo.repo_instance)
+    #book_ids = services.get_book_ids_for_author(int(author_id), repo.repo_instance)
+    book_ids = services.get_book_ids_for_author(author_name, repo.repo_instance)
 
     # Retrieve the set books we want to display based on the page
     books = services.get_books_by_id(book_ids[(page - 1) * books_per_page: page * books_per_page], repo.repo_instance)

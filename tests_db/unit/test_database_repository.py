@@ -245,8 +245,10 @@ def test_repository_returns_book_ids_for_release_year(session_factory):
 def test_repository_can_return_books_by_id(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    books = repo.get_books_by_id([7, 8, 9, 10])
-    assert books[0].title == "War Stories, Volume 3"
+    #books = repo.get_books_by_id([7, 8, 9, 10])
+    books = repo.get_books_by_id([25742454])
+    assert books[0].title == "The Switchblade Mamma"
+    #assert books[0].title == "War Stories, Volume 3"
 
 def test_repository_can_get_reading_list(session_factory):
     repo = SqlAlchemyRepository(session_factory)
@@ -327,3 +329,24 @@ def test_repository_can_get_all_books(session_factory):
     assert results[0].title == "The Switchblade Mamma"
 
     
+def test_repository_can_get_all_languages(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    results = repo.get_languages()
+    for result in results:
+        print(result)
+    assert len(results) == 6
+
+def test_repository_can_get_publishers(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    results = repo.get_publishers()
+    assert None not in results
+    assert results[0] == "Avatar Press"
+
+def test_repository_can_get_release_years(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
+
+    results = repo.get_release_years()
+    for result in results:
+        print(result)
