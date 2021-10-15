@@ -134,7 +134,7 @@ class SqlAlchemyRepository(AbstractRepository):
             result = []
             books = list(self._session_cm.session.query(Book).all())
             for book in books:
-                if book.publisher.name == publisher:
+                if book.publisher != None and book.publisher.name == publisher:
                     result.append(book)
             return result
             # books = self._session_cm.session.query(Book).filter(Book._Book__publisher == publisher).all()
@@ -179,7 +179,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get_book_ids_for_publisher(self, name: str):
         book_ids = []
-        book_ids = self._session_cm.session.execute('SELECT id FROM publishers WHERE name = :name',
+        book_ids = self._session_cm.session.execute('SELECT books.book_id FROM publishers LEFT JOIN books ON books.publisher = publishers.name WHERE publishers.name = :name',
                                                     {'name': name}).fetchall()
         if book_ids is None:
             # No existing publisher - create an empty list
@@ -189,7 +189,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get_book_ids_for_language(self, language: str):
         book_ids = []
-        row = self._session_cm.session.execute('SELECT id FROM books WHERE language = :language',
+        row = self._session_cm.session.execute('SELECT book_id FROM books WHERE language = :language',
                                                {'language': language}).fetchall()
         if row is None:
             # No author with the name target_author - create an empty list

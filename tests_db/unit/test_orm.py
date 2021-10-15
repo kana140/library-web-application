@@ -33,10 +33,10 @@ def insert_users(empty_session, values):
 
 def insert_book(empty_session):
     empty_session.execute(
-        'INSERT INTO books (book_id, title, description, publisher, author, release_year, num_pages, image_hyperlink, language) VALUES (39338, "book 1", :description, "DC Comics", "an_author", :release_year, :num_pages, :image_hyperlink, :language)',
+        'INSERT INTO books (book_id, title, description, publisher, release_year, num_pages, image_hyperlink, language) VALUES (39338, "book 1", :description, "DC Comics", :release_year, :num_pages, :image_hyperlink, :language)',
         {'description': None, 'release_year': None, 'language': None, 'image_hyperlink': None, 'num_pages': None}
     )
-    row = empty_session.execute('SELECT id from books').fetchone()
+    row = empty_session.execute('SELECT book_id FROM books').fetchone()
     return row[0]
 
 
@@ -110,7 +110,7 @@ def test_loading_of_book(empty_session):
     fetched_book = empty_session.query(Book).one()
 
     assert expected_book == fetched_book
-    assert book_key == fetched_book.id
+    assert book_key == fetched_book.book_id
 
 
 def test_loading_of_reviewed_book(empty_session):
@@ -203,14 +203,14 @@ def test_save_reviewed_book(empty_session):
     empty_session.commit()
 
     # Test test_saving_of_book() checks for insertion into the books table.
-    rows = list(empty_session.execute('SELECT id FROM books'))
-    article_key = rows[0][0]
+    rows = list(empty_session.execute('SELECT book_id FROM books'))
+    book_key = rows[0][0]
 
     # Test test_saving_of_users() checks for insertion into the users table.
     rows = list(empty_session.execute('SELECT id FROM users'))
     user_key = rows[0][0]
 
-    # Check that the comments table has a new record that links to the articles and users
+    # Check that the comments table has a new record that links to the books and users
     # tables.
     rows = list(empty_session.execute('SELECT user_id, book_id, review_text, rating FROM reviews'))
-    assert rows == [(user_key, article_key, review_text, rating)]
+    assert rows == [(user_key, book_key, review_text, rating)]

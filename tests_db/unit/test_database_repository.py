@@ -223,17 +223,17 @@ def test_repository_returns_book_ids_for_existing_publisher(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
     book_ids = repo.get_book_ids_for_publisher('DC Comics')
-    assert book_ids == [5]
+    assert book_ids == [707611]
 
     book_ids = repo.get_book_ids_for_publisher('Avatar Press')
-    assert book_ids == [7, 8, 9, 10]
+    assert book_ids == [27036536, 27036537, 27036538, 27036539]
 
 
 def test_repository_returns_book_ids_for_existing_language(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
     book_ids = repo.get_book_ids_for_language('English')
-    assert book_ids == [1, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 19, 20]
+    assert book_ids == [25742454, 13571772, 35452242, 707611, 2250580, 27036536, 27036539, 27036537, 27036538, 11827783, 12349665, 12349663, 30735315, 2168737, 18955715]
 
 
 def test_repository_returns_book_ids_for_release_year(session_factory):
