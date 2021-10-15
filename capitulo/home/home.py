@@ -29,7 +29,7 @@ def home():
             for author in book.get('authors'):
                 if q.lower() in (author.get('full_name')).lower():
                     results.append(book)
-            if q.lower() in (book.get('publisher')).lower():
+            if book.get('publisher') != None and q.lower() in (book.get('publisher').name).lower():
                 results.append(book)
             if q.lower() in str(book.get('release_year')).lower():
                 results.append(book)

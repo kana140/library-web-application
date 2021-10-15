@@ -16,7 +16,7 @@ def get_reading_list(user_name, repo: AbstractRepository):
     user = repo.get_user(user_name)
     if user is None:
         raise UnknownUserException
-    reading_list = repo.get_reading_list(user)
+    reading_list = repo.get_reading_list(user.user_name)
     return reading_list
 
 
@@ -24,7 +24,7 @@ def add_book_to_reading_list(book_id: int, user_name, repo: AbstractRepository):
     user = repo.get_user(user_name)
     if user is None:
         raise UnknownUserException
-    reading_list = repo.get_reading_list(user)
+    reading_list = repo.get_reading_list(user.user_name)
     # Check that the book exists
     book = repo.get_book(book_id)
     if book is None:
