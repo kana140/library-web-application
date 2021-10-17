@@ -6,7 +6,7 @@
 			<img src="{{ book.image_hyperlink }}" width="300" height="400" />
 			<div class="sub-flex">
 				<h3>Release Year: {{ book.release_year }}</h3>
-				<h3>Publisher: {{ book.publisher }}</h3>
+				<h3>Publisher: {{ book.publisher.name }}</h3>
 				<h4>
 					Author(s): {% for author in book.authors %}{{ author.full_name }} {%
 					if not loop.last %}, {% endif %}{% endfor %}

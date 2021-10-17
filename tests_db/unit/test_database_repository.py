@@ -145,12 +145,12 @@ def test_repository_can_get_last_book(session_factory):
 def test_repository_can_get_books_by_ids(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    books = repo.get_books_by_id([1, 2, 3])
+    books = repo.get_books_by_id([25742454, 707611, 27036536])
 
     assert len(books) == 3
-    assert books[0].title == 'The Switchblade Mamma'
-    assert books[1].title == "Cruelle"
-    assert books[2].title == 'Captain America: Winter Soldier (The Ultimate Graphic Novels Collection: Publication Order, #7)'
+    assert books[0].title == "The Switchblade Mamma"
+    assert books[1].title == "Superman Archives, Vol. 2"
+    assert books[2].title == "War Stories, Volume 3"
 
 def test_repository_does_not_retrieve_book_for_non_existent_id(session_factory):
     repo = SqlAlchemyRepository(session_factory)
@@ -158,7 +158,7 @@ def test_repository_does_not_retrieve_book_for_non_existent_id(session_factory):
     books = repo.get_books_by_id([4, 665745542, 17405342])
 
     assert len(books) == 1
-    assert books[0].title == "Bounty Hunter 4/3: My Life in Combat from Marine Scout Sniper to MARSOC"
+    assert books[0].title == "Seiyuu-ka! 12"
 
 def test_repository_returns_an_empty_list_for_non_existent_ids(session_factory):
     repo = SqlAlchemyRepository(session_factory)
@@ -240,7 +240,7 @@ def test_repository_returns_book_ids_for_release_year(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
     book_ids = repo.get_book_ids_for_year('1997')
-    assert book_ids == [5]
+    assert book_ids == [707611]
 
 def test_repository_can_return_books_by_id(session_factory):
     repo = SqlAlchemyRepository(session_factory)
@@ -248,7 +248,6 @@ def test_repository_can_return_books_by_id(session_factory):
     #books = repo.get_books_by_id([7, 8, 9, 10])
     books = repo.get_books_by_id([25742454])
     assert books[0].title == "The Switchblade Mamma"
-    #assert books[0].title == "War Stories, Volume 3"
 
 def test_repository_can_get_reading_list(session_factory):
     repo = SqlAlchemyRepository(session_factory)
@@ -317,7 +316,7 @@ def test_repository_can_get_all_book_ids(session_factory):
 def test_repository_can_get_books_by_id(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    results = repo.get_books_by_id([1, 2, 3])
+    results = repo.get_books_by_id([25742454])
 
     assert results[0].title == "The Switchblade Mamma"
 
@@ -333,8 +332,6 @@ def test_repository_can_get_all_languages(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
     results = repo.get_languages()
-    for result in results:
-        print(result)
     assert len(results) == 6
 
 def test_repository_can_get_publishers(session_factory):
@@ -348,5 +345,4 @@ def test_repository_can_get_release_years(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
     results = repo.get_release_years()
-    for result in results:
-        print(result)
+    assert len(results) == 8

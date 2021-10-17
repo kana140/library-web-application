@@ -8,13 +8,13 @@ def test_database_populate_inspect_table_names(database_engine):
     
     # Get table information
     inspector = inspect(database_engine)
-    assert inspector.get_table_names() == ['authors', 'book_authors', 'book_publishers', 'books', 'publishers', 'reading_lists', 'reviews', 'users']
+    assert inspector.get_table_names() == ['authors', 'book_authors', 'books', 'publishers', 'reading_lists', 'reviews', 'users']
 
 def test_database_populate_select_all_users(database_engine):
     
     #Get table information
     inspector = inspect(database_engine)
-    name_of_users_table = inspector.get_table_names()[7]
+    name_of_users_table = inspector.get_table_names()[6]
 
     with database_engine.connect() as connection:
         # Query for records in table users
@@ -31,7 +31,7 @@ def test_database_populate_select_all_reviews(database_engine):
     
     #Get table information
     inspector = inspect(database_engine)
-    name_of_reviews_table = inspector.get_table_names()[6]
+    name_of_reviews_table = inspector.get_table_names()[5]
 
     with database_engine.connect() as connection:
         select_statement = select([metadata.tables[name_of_reviews_table]])
@@ -52,7 +52,7 @@ def test_database_populate_select_all_books(database_engine):
 
     #Get table information
     inspector = inspect(database_engine)
-    name_of_books_table = inspector.get_table_names()[3]
+    name_of_books_table = inspector.get_table_names()[2]
 
     with database_engine.connect() as connection:
         #Query for records in table books
