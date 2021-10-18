@@ -20,7 +20,7 @@ def test_repository_can_retrieve_a_user(in_memory_repo):
 
 def test_repository_can_retrieve_number_of_users(in_memory_repo):
     users_num = in_memory_repo.get_number_of_users()
-    assert users_num == 2
+    assert users_num == 3
 
 
 def test_repository_does_not_retrieve_a_non_existent_user(in_memory_repo):

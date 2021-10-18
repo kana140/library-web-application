@@ -85,3 +85,18 @@ def test_database_populate_select_all_authors(database_engine):
             print(row)
         
         assert all_authors[0] == (1, 8551671, "Lindsey Schussman")
+
+def test_database_populate_select_all_publishers(database_engine):
+    inspector = inspect(database_engine)
+    name_of_publishers_table = inspector.get_table_names()[3]
+
+    with database_engine.connect() as connection:
+        select_statement = select([metadata.tables[name_of_publishers_table]])
+        result = connection.execute(select_statement)
+
+        all_publishers = []
+        for row in result:
+            all_publishers.append((row['id'], row['name']))
+            print(row)
+        assert all_publishers[0] == (1, "Dargaud")
+        assert all_publishers[3] == (4, "Go! Comi")

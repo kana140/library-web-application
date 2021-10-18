@@ -4,7 +4,7 @@ import datetime
 
 from sqlalchemy.exc import IntegrityError
 
-from capitulo.domain.model import User, Book, Review, make_review
+from capitulo.domain.model import User, Book, Review, make_review, Author
 
 
 def insert_user(empty_session, values=None):
@@ -40,6 +40,14 @@ def insert_book(empty_session):
     return row[0]
 
 
+def insert_author(empty_session):
+    empty_session.execute(
+        'INSERT INTO authors (unique_id, full_name) VALUES (3953, "Urmom")'
+    )
+    row = empty_session.execute('SELECT id FROM authors').fetchone()
+    return row[0]
+
+
 def insert_reviewed_book(empty_session):
     article_key = insert_book(empty_session)
     user_key = insert_user(empty_session)
@@ -52,7 +60,8 @@ def insert_reviewed_book(empty_session):
         'INSERT INTO reviews (user_id, book_id, review_text, rating, timestamp) VALUES '
         '(:user_id, :book_id, "Review 1", :rating, :timestamp_1),'
         '(:user_id, :book_id, "Review 2", :rating, :timestamp_2)',
-        {'user_id': user_key, 'book_id': article_key, 'rating': rating, 'timestamp_1': timestamp_1, 'timestamp_2': timestamp_2}
+        {'user_id': user_key, 'book_id': article_key, 'rating': rating, 'timestamp_1': timestamp_1,
+         'timestamp_2': timestamp_2}
     )
 
     row = empty_session.execute('SELECT id from books').fetchone()
@@ -70,6 +79,17 @@ def make_book():
 def make_user():
     user = User("Andrew", "1111111")
     return user
+
+
+def insert_authored_book_association(empty_session, book_key, author_key):
+    stmt = 'INSERT INTO book_authors (author_id, book_id) VALUES (:author_id, :book_id)'
+    empty_session.execute(stmt, {'author_id': author_key, 'book_id': book_key})
+
+
+def insert_authored_book_association_for_multiple_authors(empty_session, book_key, author_keys):
+    stmt = 'INSERT INTO book_authors (author_id, book_id) VALUES (:author_id, :book_id)'
+    for author_key in author_keys:
+        empty_session.execute(stmt, {'author_id': author_key, 'book_id': book_key})
 
 
 def test_loading_of_users(empty_session):
@@ -161,7 +181,7 @@ def test_saving_reading_list(empty_session):
     user = make_user()
 
     # Establish the bidirectional relationship between the Book and the User.
-    #make_tag_association(article, tag)
+    # make_tag_association(article, tag)
     user.add_to_reading_list(book)
 
     # Persist the Article (and Tag).
