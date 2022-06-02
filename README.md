@@ -1,4 +1,4 @@
-# COMPSCI 235 Starter Repository for Assignment 2
+# COMPSCI 235 Project
 
 
 ## Description
