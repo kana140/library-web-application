@@ -3,13 +3,9 @@
 
 ## Description
 
-This repository contains an implementation of the domain model from Assignment 1. 
-It contains unit tests which can be run through pytest. 
-It also contains a simple Flask application that renders content of a Book object instance from our domain model on a blank html page.
+This repository contains a simple Flask application that renders content of a Book object instance from our domain model on a blank html page. It contains unit tests which can be run through pytest. 
 
-Please note that this sample implementation from Assignment 1 contains a more comprehensive superset of tests compared with what we had as hidden tests on Coderunner. 
-Your domain model implementation may have to be extended to meet all test cases in the sample implementation, but you may also decide to remove or modify test cases as it suits you. 
-From here on you can choose if you want to use the provided domain model or your implementation, just make sure your chosen set of test cases always work with your implementation.
+
 
 
 ## Python version
